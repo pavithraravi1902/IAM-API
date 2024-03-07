@@ -11,4 +11,4 @@ try {
  }
  };
 
-module.exports = verifyToken;
+export default verifyToken;

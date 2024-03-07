@@ -1,34 +1,24 @@
-/* eslint-disable no-unused-vars */
-import merge from 'lodash/merge.js';
+import merge from "lodash/merge.js";
 import path from "path";
+import dotenv from "dotenv-safe";
 
-/* istanbul ignore next */
-const requireProcessEnv = (name) => {
-  if (!process.env[name]) {
-    throw new Error("You must set the " + name + " environment variable");
-  }
-  return process.env[name];
-};
+const __filename = new URL(import.meta.url).pathname;
+const __dirname = path.dirname(__filename);
 
-const dotenv = require("dotenv-safe");
-dotenv.config({
-  path: path.join(__dirname, "../.env"),
-  example: path.join(__dirname, "../.env.example"),
-});
+dotenv.config();
 
-const config = {
-  all: {
-    env: process.env.NODE_ENV || "development",
-    root: path.join(__dirname, ".."),
-    port: process.env.PORT || 3000,
-    ip: process.env.IP || "0.0.0.0",
-    apiRoot: process.env.API_ROOT || "",
-    mongo: {
-      options: {
-        useUnifiedTopology: true,
-        useNewUrlParser: true,
-        useCreateIndex: true,
-      },
+export const config = {
+  env: process.env.NODE_ENV || "development",
+  root: path.join(__dirname, ".."),
+  port: process.env.PORT || 3000,
+  ip: process.env.IP || "0.0.0.0",
+  apiRoot: process.env.API_ROOT || "",
+  SWAGGER_API_HOST: "http://localhost:3000",
+  mongo: {
+    options: {
+      useUnifiedTopology: true,
+      useNewUrlParser: true,
+      useCreateIndex: true,
     },
   },
   test: {
@@ -48,5 +38,5 @@ const config = {
     },
   },
 };
-module.exports = merge(config.all, config[config.all.env]);
-export default module.exports;
+
+export const SWAGGER_API_HOST = "http://localhost:3000"

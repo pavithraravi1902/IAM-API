@@ -1,0 +1,7 @@
+swagger: "2.0"
+info:
+  description: "Interactive Mentor API documentation"
+  version: "1.0.0"
+  title: "Mentor API Doc"
+host: "localhost:9200"
+basePath: "/"
