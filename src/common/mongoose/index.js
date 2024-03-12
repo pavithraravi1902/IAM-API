@@ -6,7 +6,6 @@ dotenv.config();
 const uri = process.env.DB_URI; 
 
 if (!uri) {
-    console.error('MongoDB URI is undefined');
     process.exit(1);
 }
 
