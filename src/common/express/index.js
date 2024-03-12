@@ -7,17 +7,21 @@ import morgan from "morgan";
 import { errorHandler as queryErrorHandler } from "querymen";
 import path from "path";
 import session from "express-session";
-import passport from "passport"
-const clientId = "c04sVco7fw53IXoofSeUqJgTqb5UGJhL";
-const clientSecrete = "KBcRJkRsEu67cLvQHa06Wu9PqnXfIf8KtNL0rpaQpPHGEib34JhdZHNRVd_n26de";
+import passport from "passport";
+import { Strategy as OIDCStrategy } from 'passport-openidconnect';
+
 export default (apiRoot, routes) => {
   const app = express();
+  const __dirname = new URL(".", import.meta.url).pathname;
+  const clientId = "c04sVco7fw53IXoofSeUqJgTqb5UGJhL";
+  const clientSecrete =
+    "KBcRJkRsEu67cLvQHa06Wu9PqnXfIf8KtNL0rpaQpPHGEib34JhdZHNRVd_n26de";
+  const issuer = "http://localhost:3000/login";
+
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  const __dirname = new URL(".", import.meta.url).pathname;
   app.use(express.static(path.join(__dirname, "public")));
   app.set("view engine", "ejs");
-  console.log(clientSecrete, "process.env.CLIENT_SCRET");
   app.use(
     session({
       secret: clientSecrete,

@@ -16,6 +16,6 @@ export const createUser = (req, res) => {
         res.status(200).json({ message: "User login successfully", user });
       })
       .catch((error) => {
-        res.status(error.status || 500).json({ message: error.message || "Internal server error" });
+        res.status(error.status || 501).json({ message: error.message || "Internal server error" });
       });
   };
