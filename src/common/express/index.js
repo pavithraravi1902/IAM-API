@@ -8,6 +8,7 @@ import morgan from "morgan";
 import passport from "../../common/openid/passport.js";
 import path from "path";
 import { errorHandler as queryErrorHandler } from "querymen";
+import sessionTimeoutMiddleware from "../openid/session.js";
 
 export default (apiRoot, routes) => {
   const app = express();
@@ -16,12 +17,11 @@ export default (apiRoot, routes) => {
   const clientSecret =
     "KBcRJkRsEu67cLvQHa06Wu9PqnXfIf8KtNL0rpaQpPHGEib34JhdZHNRVd_n26de";
   const issuer = "http://localhost:3000/login";
-  console.log("Setting up middleware...");
   app.use(
     session({
       secret: clientSecret,
       resave: false,
-      saveUninitialized: true,
+      saveUninitialized: false,
     })
   );
 
@@ -29,11 +29,13 @@ export default (apiRoot, routes) => {
   app.use(passport.initialize());
   app.use(passport.session());
 
+  //app.use(sessionTimeoutMiddleware);
+
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(express.static(path.join(__dirname, "public")));
   app.set("view engine", "ejs");
- 
+
   app.get("/", (req, res) => {
     res.render("index.ejs");
   });
@@ -48,6 +50,23 @@ export default (apiRoot, routes) => {
   app.use(apiRoot, routes);
   app.use(queryErrorHandler());
   app.use(bodyErrorHandler());
+
+  app.use((err, req, res, next) => {
+    res.status(500).json({ message: "Internal Server Error" });
+  });
+
+  app.get(
+    "/auth/google",
+    passport.authenticate("google", { scope: ["email", "profile"] })
+  );
+
+  app.get(
+    "/users/google/callback",
+    passport.authenticate("google", {
+      successRedirect: "/users/google/success",
+      failureRedirect: "/users/google/failure",
+    })
+  );
 
   return app;
 };
