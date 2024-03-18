@@ -13,7 +13,9 @@ const userSchema = new Schema({
     lowercase: true,
     sparse: true,
   },
-  password: { type: String, required: true, minlength: 6 },
+  password: { type: String },
+  googleId: { type: String, unique: true }, 
+  pictureUrl: String
 });
 
 userSchema.pre('save', async function(next) {

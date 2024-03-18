@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { jwtSecretKey } from "../../common/openid/jwt.js";
-import { sendOTPByEmail } from "../../common/openid/otp.js";
+import { sendOTPByEmail, verifyOTP } from "../../common/openid/otp.js";
 import passport from "../../common/openid/passport.js";
 import { User } from "./model.js";
 
@@ -75,11 +75,24 @@ export const loginService = async (req, res) => {
         };
         const token = jwt.sign(payload, jwtSecretKey, { expiresIn: "1h" });
         user.token = token;
-        sendOTPByEmail("pavithrar@bloomlync.com", 453213);
+        sendOTPByEmail(user.email);
         resolve({ token: token, user: user });
       })(req);
     });
   } catch (error) {
     throw error;
+  }
+};
+
+export const verifyOtpService = async (otp) => {
+  console.log(otp, "service")
+  try {
+    if (verifyOTP(otp)) {
+     console.log("verified")
+  } else {
+      console.log('Invalid OTP. Please try again.');
+  }
+  } catch (error) {
+    console.log(error);
   }
 };

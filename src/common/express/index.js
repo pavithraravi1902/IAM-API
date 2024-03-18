@@ -51,22 +51,23 @@ export default (apiRoot, routes) => {
   app.use(queryErrorHandler());
   app.use(bodyErrorHandler());
 
-  app.use((err, req, res, next) => {
-    res.status(500).json({ message: "Internal Server Error" });
-  });
-
   app.get(
-    "/auth/google",
+    "/users/google",
     passport.authenticate("google", { scope: ["email", "profile"] })
   );
 
   app.get(
     "/users/google/callback",
     passport.authenticate("google", {
-      successRedirect: "/users/google/success",
-      failureRedirect: "/users/google/failure",
+      successRedirect: "http://localhost:4201",
+      failureRedirect: "/",
     })
   );
+
+  app.use((err, req, res, next) => {
+    res.status(500).json({ message: err });
+  });
+
 
   return app;
 };

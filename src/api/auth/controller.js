@@ -1,4 +1,4 @@
-import { createUserService, loginService } from "./service.js";
+import { createUserService, loginService, verifyOtpService } from "./service.js";
 
 export const createUser = (req, res) => {
   createUserService(req.body)
@@ -20,6 +20,18 @@ export const login = async (req, res) => {
     res
       .status(error.status || 401)
       .json({ message: error.message || "Authentication failed" });
+  }
+};
+
+export const verifyOtp = async (req, res) => {
+  try {
+    console.log(req.body, "controller console")
+    const verify = await verifyOtpService(req.body);
+    res.status(200).json({ message: "OTP verified successfully" }).redirect('http://localhost:4201');
+  } catch (error) {
+    res
+      .status(error.status || 401)
+      .json({ message: error.message || "OTP verification failed" });
   }
 };
 

@@ -1,5 +1,5 @@
 import express from "express";
-import { createUser, login } from "./controller.js";
+import { createUser, login, verifyOtp } from "./controller.js";
 //import passport from "../../common/openid/passport.js";
 import passport from "passport";
 
@@ -13,8 +13,8 @@ router.post(
   "/login",
   passport.authenticate(
     "local"
-    // {
-    //     successRedirect: 'http://localhost:4201/index',
+    // ,{
+    //     successRedirect: 'http://localhost:4201',
     //     failureRedirect: 'http://localhost:4201/login',
     //     failureFlash: true
     //   }
@@ -22,8 +22,6 @@ router.post(
   login
 );
 
-// router.get('/google/callback', accessToken);
-
-// router.post('/sigin', sigin);
+router.post("/verify-otp", verifyOtp)
 
 export default router;
