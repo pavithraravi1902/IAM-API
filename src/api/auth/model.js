@@ -15,7 +15,9 @@ const userSchema = new Schema({
   },
   password: { type: String },
   googleId: { type: String, unique: true }, 
-  pictureUrl: String
+  pictureUrl: String,
+  otp: String,
+  otpExpiration: Date,
 });
 
 userSchema.pre('save', async function(next) {

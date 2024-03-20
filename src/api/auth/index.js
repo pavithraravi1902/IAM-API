@@ -1,5 +1,5 @@
 import express from "express";
-import { createUser, login, verifyOtp } from "./controller.js";
+import { createUser, login, sendOtpByEmail, verifyOtp } from "./controller.js";
 //import passport from "../../common/openid/passport.js";
 import passport from "passport";
 
@@ -21,6 +21,8 @@ router.post(
   ),
   login
 );
+
+router.post("/send-otp", sendOtpByEmail);
 
 router.post("/verify-otp", verifyOtp)
 
