@@ -1,4 +1,4 @@
-import { createUserService, loginService, sendOTPByEmailService, verifyOtpService } from "./service.js";
+import { createUserService, forgotPasswordService, loginService, resetPasswordService, sendOTPByEmailService, verifyOtpService, verifyResetTokenService } from "./service.js";
 
 export const createUser = (req, res) => {
   createUserService(req.body)
@@ -24,8 +24,9 @@ export const login = async (req, res) => {
 };
 
 export const sendOtpByEmail = async (req, res) => {
+  const {email} = req.body
   try {
-    const user = await sendOTPByEmailService(req);
+    const user = await sendOTPByEmailService(email);
     res.status(200).json({ message: "OTP Sent to the Email successfully" });
   } catch (error) {
     res
@@ -35,12 +36,49 @@ export const sendOtpByEmail = async (req, res) => {
 };
 
 export const verifyOtp = async (req, res) => {
+  const {email, otp} = req.body
   try {
-    const verify = await verifyOtpService(req.body);
+    const verify = await verifyOtpService(email, otp);
     res.status(200).json({ message: verify });
   } catch (error) {
     res
       .status(error.status || 401)
       .json({ message: error.message || "OTP verification failed" });
+  }
+};
+
+export const forgotPassword = async (req, res) => {
+  const {email} = req.body
+  try {
+    const user = await forgotPasswordService(email);
+    res.status(200).json({ message: user });
+  } catch (error) {
+    res
+      .status(error.status || 400)
+      .json({ message: error.message || "Internal Server Error" });
+  }
+};
+
+export const verifyResetToken = async (req, res) => {
+  const {token} = req.body
+  try {
+    const user = await verifyResetTokenService(token);
+    res.status(200).json({ message: user });
+  } catch (error) {
+    res
+      .status(error.status || 400)
+      .json({ message: error.message || "Invalid token" });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  const {newPassword, email} = req.body
+  try {
+    const user = await resetPasswordService(email, newPassword);
+    res.status(200).json({ message: user });
+  } catch (error) {
+    res
+      .status(error.status || 400)
+      .json({ message: error.message || "Failed to update Password" });
   }
 };

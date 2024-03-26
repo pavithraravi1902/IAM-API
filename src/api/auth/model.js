@@ -18,6 +18,8 @@ const userSchema = new Schema({
   pictureUrl: String,
   otp: String,
   otpExpiration: Date,
+  resetPasswordToken: String,
+  resetPasswordExpiration: Date
 });
 
 userSchema.pre('save', async function(next) {
@@ -44,3 +46,70 @@ userSchema.methods.authenticate = async function (password) {
 
 export const User = mongoose.model("User", userSchema);
 
+const passwordResetSchema = new Schema({
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    // index: true,
+  },
+  token: {
+    type: String,
+    unique: true,
+    index: true,
+    default: () => uid(64),
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+    expires: 3600,
+  },
+});
+
+passwordResetSchema.methods = {
+  view() {
+    return {
+      user: this.user.view(),
+      token: this.token,
+    };
+  },
+};
+
+export const PasswordReset = mongoose.model(
+  "PasswordReset",
+  passwordResetSchema
+);
+
+const activationTokenSchema = new Schema({
+  user: {
+    type: Schema.ObjectId,
+    ref: "User",
+    index: true,
+  },
+  token: {
+    type: String,
+    unique: true,
+    index: true,
+    default: () => uid(64),
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+    expires: 3600,
+  },
+});
+
+activationTokenSchema.methods = {
+  view() {
+    return {
+      user: this.user.view(),
+      token: this.token,
+    };
+  },
+};
+
+export const ActivationToken = mongoose.model(
+  "ActivationToken",
+  activationTokenSchema
+);
+
+export const activationTokenSchemaDef = ActivationToken.schema;

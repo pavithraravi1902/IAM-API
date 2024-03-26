@@ -1,14 +1,13 @@
-import { jwtSecretKey } from "../../common/openid/jwt.js";
-import { User } from "./model.js";
-import passport from "../../common/openid/passport.js";
 import jwt from "jsonwebtoken";
-import nodemailer from "nodemailer";
-
-const generateOtp = () => {
-  const otp = Math.floor(100000 + Math.random() * 900000);
-  console.log(otp);
-  return otp.toString();
-};
+import {
+  createResetToken,
+  jwtSecretKey,
+  sign,
+  verify,
+} from "../../common/openid/jwt.js";
+import { sendEmail, generateOtp } from "../../common/openid/otp.js";
+import passport from "../../common/openid/passport.js";
+import { User } from "./model.js";
 
 export const createUserService = async (userData) => {
   try {
@@ -44,7 +43,7 @@ export const loginService = async (req, res) => {
           userId: user.id,
           email: user.email,
         };
-        const token = jwt.sign(payload, jwtSecretKey, { expiresIn: "1h" });
+        const token = createResetToken(payload);
         user.token = token;
         resolve({ token: token, user: user });
       })(req);
@@ -56,67 +55,130 @@ export const loginService = async (req, res) => {
 
 export const sendOTPByEmailService = async (email) => {
   const generatedOtp = generateOtp();
-  console.log(generatedOtp, "sendgen");
-  const expirationTimeMs = 1 * 60 * 1000;
-  console.log(expirationTimeMs, "expirationTimeMs")
+  const expirationTimeMs = 5 * 60 * 1000;
   const expirationTimestamp = Date.now() + expirationTimeMs;
-
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: "pavithraravi1902@gmail.com",
-      pass: "sxtd tzwb lxba sbcq", // google project password
-    },
-  });
-
-  const mailOptions = {
-    from: "pavithraravi1902@gmail.com",
-    to: "pavithrar@bloomlync.com",
+  const mailInfo = {
+    email: email,
     subject: "Your OTP for MFA",
-    text: `Your OTP is: ${generatedOtp}. This OTP is valid for 1 minutes. Please use it before ${expirationTimestamp}.`,
+    content: `Your OTP is: ${generatedOtp}. This OTP is valid for 1 minute. Please use it before ${expirationTimestamp}.`,
   };
-
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log("not send");
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-    }
+  const isSent = await sendEmail(mailInfo);
+  if (isSent) {
     try {
-      User.findOneAndUpdate(
-        { email: "pavithrar@bloomlync.com" },
+      await User.findOneAndUpdate(
+        { email: email },
         { otp: generatedOtp, otpExpiration: expirationTimestamp }
       );
     } catch (error) {
-      console.log("Failed to store OTP in the database");
-      console.log(error);
+      throw new Error(error ? error : "Failed to send OTP.");
     }
-  });
+  }
 };
 
 export const verifyOtpService = async (email, userOtp) => {
   try {
     const user = await User.findOne({ email: email });
     if (!user || !user.otp || !user.otpExpiration) {
-      console.log("OTP not found or expired for the user");
-      return false;
+      throw new Error("OTP not found or expired for the user");
     }
     if (Date.now() > user.otpExpiration) {
-      console.log("OTP has expired");
-      return false;
+      throw new Error("OTP has expired");
     }
     if (user.otp === userOtp) {
-      console.log(user.otp, userOtp, "userOtp")
-      console.log("OTP verified successfully");
-      return true;
+      return "OTP verified successfully";
     } else {
-      console.log("Invalid OTP. Please try again.");
-      return false;
+      throw new Error("Invalid OTP. Please try again.");
     }
   } catch (error) {
-    console.log("Error while verifying OTP");
-    console.log(error);
-    return false;
+    throw new Error(error);
+  }
+};
+
+// export const storeResetTokenService = async (email, token) => {
+//   try {
+//     const user = await User.findOneAndUpdate(
+//       { email: email },
+//       { resetToken: token, resetTokenExpiry: Date.now() + 3600000 },
+//       { new: true }
+//     );
+//     if (!user) {
+//       throw new Error("User not found");
+//     }
+//     return user;
+//   } catch (error) {
+//     console.error("Failed to store reset token:", error);
+//     throw error;
+//   }
+// };
+
+export const forgotPasswordService = async (email) => {
+  try {
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      throw new Error("User not found");
+    }
+    const token = await createResetToken(user._id);
+    const result = { token };
+    const expirationTime = new Date();
+    expirationTime.setHours(expirationTime.getHours() + 1);
+    const updatedUser = await User.findOneAndUpdate(
+      { email: email },
+      {
+        $set: {
+          resetPasswordToken: token,
+          resetPasswordExpiration: expirationTime,
+        },
+      },
+      { new: true }
+    );
+    const resetUrl = `https://localhost:3000/reset-password?token=${token}`;
+    const mailInfo = {
+      email: email,
+      subject: `Password Update`,
+      content: `Update your password through ${resetUrl}`,
+    };
+    await sendEmail(mailInfo);
+    return result;
+  } catch (error) {
+    console.error("Error in forgotPasswordService:", error);
+    throw error;
+  }
+};
+
+export const resetPasswordService = async (email, newPassword) => {
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new Error("User not found");
+    }
+    const result = await User.findOneAndUpdate(
+      {
+        password: newPassword,
+      },
+      { new: true }
+    );
+    return { success: true, message: "Password reset successfully", result };
+  } catch (error) {
+    console.error("Failed to reset password:", error);
+    throw new Error("Failed to reset password");
+  }
+};
+
+export const verifyResetTokenService = async (token) => {
+  try {
+    if (!token) {
+      throw new Error("JWT token must be provided");
+    }
+    const decoded = await verify(token);
+    const email = decoded.email;
+    const resetPassword = await User.findOne({
+      resetPasswordToken: token,
+    });
+    if (!resetPassword) {
+      throw new Error("Invalid or expired reset token");
+    }
+    return "Verified Successfully";
+  } catch (error) {
+    throw new Error(error);
   }
 };

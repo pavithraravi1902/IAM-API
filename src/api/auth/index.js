@@ -1,5 +1,5 @@
 import express from "express";
-import { createUser, login, sendOtpByEmail, verifyOtp } from "./controller.js";
+import { createUser, forgotPassword, login, resetPassword, sendOtpByEmail, verifyOtp, verifyResetToken } from "./controller.js";
 //import passport from "../../common/openid/passport.js";
 import passport from "passport";
 
@@ -24,6 +24,13 @@ router.post(
 
 router.post("/send-otp", sendOtpByEmail);
 
-router.post("/verify-otp", verifyOtp)
+router.post("/verify-otp", verifyOtp);
+
+router.post("/forgot-password", forgotPassword);
+
+router.get("/:token", verifyResetToken);
+
+router.post("/reset-password", resetPassword);
+
 
 export default router;
