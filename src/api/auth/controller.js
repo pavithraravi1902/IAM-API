@@ -1,4 +1,12 @@
-import { createUserService, forgotPasswordService, loginService, resetPasswordService, sendOTPByEmailService, verifyOtpService, verifyResetTokenService } from "./service.js";
+import {
+  createUserService,
+  forgotPasswordService,
+  loginService,
+  resetPasswordService,
+  sendOTPByEmailService,
+  verifyOtpService,
+  verifyResetTokenService
+} from "./service.js";
 
 export const createUser = (req, res) => {
   createUserService(req.body)
@@ -23,8 +31,19 @@ export const login = async (req, res) => {
   }
 };
 
+// export const sigin = async (req, res) => {
+//   try {
+//     const google_info = await siginWithGoogleService(req);
+//     res.status(200).json({ message: "google profile info", google_info });
+//   } catch (error) {
+//     res
+//       .status(error.status || 401)
+//       .json({ message: error.message});
+//   }
+// };
+
 export const sendOtpByEmail = async (req, res) => {
-  const {email} = req.body
+  const { email } = req.body;
   try {
     const user = await sendOTPByEmailService(email);
     res.status(200).json({ message: "OTP Sent to the Email successfully" });
@@ -36,7 +55,7 @@ export const sendOtpByEmail = async (req, res) => {
 };
 
 export const verifyOtp = async (req, res) => {
-  const {email, otp} = req.body
+  const { email, otp } = req.body;
   try {
     const verify = await verifyOtpService(email, otp);
     res.status(200).json({ message: verify });
@@ -48,7 +67,7 @@ export const verifyOtp = async (req, res) => {
 };
 
 export const forgotPassword = async (req, res) => {
-  const {email} = req.body
+  const { email } = req.body;
   try {
     const user = await forgotPasswordService(email);
     res.status(200).json({ message: user });
@@ -60,7 +79,7 @@ export const forgotPassword = async (req, res) => {
 };
 
 export const verifyResetToken = async (req, res) => {
-  const {token} = req.body
+  const { token } = req.body;
   try {
     const user = await verifyResetTokenService(token);
     res.status(200).json({ message: user });
@@ -72,7 +91,7 @@ export const verifyResetToken = async (req, res) => {
 };
 
 export const resetPassword = async (req, res) => {
-  const {newPassword, email} = req.body
+  const { newPassword, email } = req.body;
   try {
     const user = await resetPasswordService(email, newPassword);
     res.status(200).json({ message: user });

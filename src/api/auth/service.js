@@ -1,11 +1,8 @@
-import jwt from "jsonwebtoken";
 import {
   createResetToken,
-  jwtSecretKey,
-  sign,
-  verify,
+  verify
 } from "../../common/openid/jwt.js";
-import { sendEmail, generateOtp } from "../../common/openid/otp.js";
+import { generateOtp, sendEmail } from "../../common/openid/otp.js";
 import passport from "../../common/openid/passport.js";
 import { User } from "./model.js";
 
@@ -94,23 +91,6 @@ export const verifyOtpService = async (email, userOtp) => {
   }
 };
 
-// export const storeResetTokenService = async (email, token) => {
-//   try {
-//     const user = await User.findOneAndUpdate(
-//       { email: email },
-//       { resetToken: token, resetTokenExpiry: Date.now() + 3600000 },
-//       { new: true }
-//     );
-//     if (!user) {
-//       throw new Error("User not found");
-//     }
-//     return user;
-//   } catch (error) {
-//     console.error("Failed to store reset token:", error);
-//     throw error;
-//   }
-// };
-
 export const forgotPasswordService = async (email) => {
   try {
     const user = await User.findOne({ email: email });
@@ -151,13 +131,22 @@ export const resetPasswordService = async (email, newPassword) => {
     if (!user) {
       throw new Error("User not found");
     }
+    console.log(newPassword, "newPassword")
+    user.password = newPassword;
+    const results = await user.save();
+
     const result = await User.findOneAndUpdate(
       {
         password: newPassword,
       },
       { new: true }
     );
-    return { success: true, message: "Password reset successfully", result };
+    console.log(results, "result")
+    console.log(result, "result")
+    if(!results){
+      throw new Error("Failed to update password")
+    }
+    return { success: true, message: "Password reset successfully", results };
   } catch (error) {
     console.error("Failed to reset password:", error);
     throw new Error("Failed to reset password");

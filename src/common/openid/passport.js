@@ -31,6 +31,7 @@ async function(req, accessToken, refreshToken, profile, done) {
         googleId: profile.id,
         pictureUrl: profile.pictureUrl
       }
+      console.log(profileData, "profileData")
       if (!user) {
         user = await User.create(profileData);
       }
@@ -69,7 +70,9 @@ passport.use(
           email: user.email,
         };
         const token = jwt.sign(payload, jwtSecretKey, { expiresIn: "1h" });
-        user.token = token;
+        await User.findOneAndUpdate(
+          { token: token },
+        );
         return done(null, user);
       } catch (error) {
         return done(error);
