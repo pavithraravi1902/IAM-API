@@ -50,6 +50,20 @@ export const loginService = async (req, res) => {
   }
 };
 
+export const getUsersService = async () => {
+  try {
+    const user = await User.find();
+    if (!user) {
+      const error = new Error("Error while creating user");
+      error.status = 400;
+      throw error;
+    }
+    return user;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const sendOTPByEmailService = async (email) => {
   const generatedOtp = generateOtp();
   const expirationTimeMs = 5 * 60 * 1000;
@@ -72,7 +86,26 @@ export const sendOTPByEmailService = async (email) => {
   }
 };
 
-export const verifyOtpService = async (email, userOtp) => {
+export const verifyEmailOtpService = async (email, userOtp) => {
+  try {
+    const user = await User.findOne({ email: email });
+    if (!user || !user.otp || !user.otpExpiration) {
+      throw new Error("OTP not found or expired for the user");
+    }
+    if (Date.now() > user.otpExpiration) {
+      throw new Error("OTP has expired");
+    }
+    if (user.otp === userOtp) {
+      return "OTP verified successfully";
+    } else {
+      throw new Error("Invalid OTP. Please try again.");
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+export const verifyMobileOtpService = async (email, userOtp) => {
   try {
     const user = await User.findOne({ email: email });
     if (!user || !user.otp || !user.otpExpiration) {
@@ -131,25 +164,20 @@ export const resetPasswordService = async (email, newPassword) => {
     if (!user) {
       throw new Error("User not found");
     }
-    console.log(newPassword, "newPassword")
+    if (!user.resetPasswordToken || !user.resetPasswordExpiration) {
+      throw new Error("Password reset session expired for the user");
+    }
+    if (Date.now() > user.resetPasswordExpiration) {
+      throw new Error("Password reset session has expired");
+    }
     user.password = newPassword;
     const results = await user.save();
-
-    const result = await User.findOneAndUpdate(
-      {
-        password: newPassword,
-      },
-      { new: true }
-    );
-    console.log(results, "result")
-    console.log(result, "result")
     if(!results){
       throw new Error("Failed to update password")
     }
     return { success: true, message: "Password reset successfully", results };
   } catch (error) {
-    console.error("Failed to reset password:", error);
-    throw new Error("Failed to reset password");
+    throw new Error(error ? error : "Failed to reset password");
   }
 };
 
@@ -171,3 +199,7 @@ export const verifyResetTokenService = async (token) => {
     throw new Error(error);
   }
 };
+
+export const updateUserProfile = async (data) => {
+  const {userName, password} = data
+}

@@ -2,10 +2,11 @@ import express from "express";
 import {
   createUser,
   forgotPassword,
+  getUsers,
   login,
   resetPassword,
   sendOtpByEmail,
-  verifyOtp,
+  verifyEmailOtp,
   verifyResetToken
 } from "./controller.js";
 //import passport from "../../common/openid/passport.js";
@@ -30,9 +31,11 @@ router.post(
   login
 );
 
+router.get("/", getUsers)
+
 router.post("/send-otp", sendOtpByEmail);
 
-router.post("/verify-otp", verifyOtp);
+router.post("/verify-otp", verifyEmailOtp);
 
 router.post("/forgot-password", forgotPassword);
 

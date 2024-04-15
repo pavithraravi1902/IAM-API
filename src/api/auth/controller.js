@@ -1,10 +1,11 @@
 import {
   createUserService,
   forgotPasswordService,
+  getUsersService,
   loginService,
   resetPasswordService,
   sendOTPByEmailService,
-  verifyOtpService,
+  verifyEmailOtpService,
   verifyResetTokenService
 } from "./service.js";
 
@@ -31,6 +32,18 @@ export const login = async (req, res) => {
   }
 };
 
+export const getUsers = (req, res) => {
+  getUsersService()
+    .then((user) => {
+      res.status(200).json({ message: "Existing Users", user });
+    })
+    .catch((error) => {
+      res
+        .status(error.status || 500)
+        .json({ message: error.message || "Internal server error" });
+    });
+};
+
 // export const sigin = async (req, res) => {
 //   try {
 //     const google_info = await siginWithGoogleService(req);
@@ -44,6 +57,7 @@ export const login = async (req, res) => {
 
 export const sendOtpByEmail = async (req, res) => {
   const { email } = req.body;
+  console.log(email, "email")
   try {
     const user = await sendOTPByEmailService(email);
     res.status(200).json({ message: "OTP Sent to the Email successfully" });
@@ -54,10 +68,10 @@ export const sendOtpByEmail = async (req, res) => {
   }
 };
 
-export const verifyOtp = async (req, res) => {
+export const verifyEmailOtp = async (req, res) => {
   const { email, otp } = req.body;
   try {
-    const verify = await verifyOtpService(email, otp);
+    const verify = await verifyEmailOtpService(email, otp);
     res.status(200).json({ message: verify });
   } catch (error) {
     res

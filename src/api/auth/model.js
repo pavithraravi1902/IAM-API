@@ -19,7 +19,8 @@ const userSchema = new Schema({
   otp: String,
   otpExpiration: Date,
   resetPasswordToken: String,
-  resetPasswordExpiration: Date
+  resetPasswordExpiration: Date,
+  role: String
 });
 
 userSchema.pre('save', async function(next) {

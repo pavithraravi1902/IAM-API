@@ -9,6 +9,7 @@ import passport from "../../common/openid/passport.js";
 import path from "path";
 import { errorHandler as queryErrorHandler } from "querymen";
 import sessionTimeoutMiddleware from "../openid/session.js";
+import { isAdmin, isUser } from "../openid/access.js";
 
 export default (apiRoot, routes) => {
   const app = express();
@@ -16,7 +17,12 @@ export default (apiRoot, routes) => {
   const clientId = "c04sVco7fw53IXoofSeUqJgTqb5UGJhL";
   const clientSecret =
     "KBcRJkRsEu67cLvQHa06Wu9PqnXfIf8KtNL0rpaQpPHGEib34JhdZHNRVd_n26de";
-  const issuer = "http://localhost:3000/login";
+  const issuer = "http://localhost:3001/login";
+  const corsOptions ={
+    origin:'http://localhost:3001', 
+    credentials:true,            //access-control-allow-credentials:true
+    optionSuccessStatus:200
+}
   app.use(
     session({
       secret: clientSecret,
@@ -35,7 +41,7 @@ export default (apiRoot, routes) => {
   app.use(express.urlencoded({ extended: true }));
   app.use(express.static(path.join(__dirname, "public")));
   app.set("view engine", "ejs");
-
+  app.use(cors());
   app.get("/", (req, res) => {
     res.render("index.ejs");
   });
@@ -59,15 +65,22 @@ export default (apiRoot, routes) => {
   app.get(
     "/users/google/callback",
     passport.authenticate("google", {
-      successRedirect: "http://localhost:4201",
+      successRedirect: "http://localhost:3001",
       failureRedirect: "/",
     })
   );
 
+  app.get("/admin/dashboard", isAdmin, (req, res) => {
+    res.send("Admin Dashboard");
+  });
+
+  app.get("/user/profile", isUser, (req, res) => {
+    res.send("User Profile");
+  });
+
   app.use((err, req, res, next) => {
     res.status(500).json({ message: err });
   });
-
 
   return app;
 };
