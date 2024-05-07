@@ -1,10 +1,7 @@
-import {
-  createResetToken,
-  verify
-} from "../../common/openid/jwt.js";
+import { createResetToken, sign, verify } from "../../common/openid/jwt.js";
 import { generateOtp, sendEmail } from "../../common/openid/otp.js";
 import passport from "../../common/openid/passport.js";
-import { User } from "./model.js";
+import { ActivationToken, User } from "./model.js";
 
 export const createUserService = async (userData) => {
   try {
@@ -29,26 +26,54 @@ export const createUserService = async (userData) => {
 export const loginService = async (req, res) => {
   try {
     return new Promise((resolve, reject) => {
-      passport.authenticate("local", (err, user, info) => {
+      passport.authenticate('local', async (err, user, info) => {
         if (err) {
           return reject(err);
         }
         if (!user) {
           return reject(new Error(info.message));
         }
-        const payload = {
-          userId: user.id,
-          email: user.email,
-        };
-        const token = createResetToken(payload);
-        user.token = token;
+        const token = await sign(user.id);
+        const activationToken = new ActivationToken({
+          user: user._id,
+          token: token,
+        });
+
+        await activationToken.save();
         resolve({ token: token, user: user });
-      })(req);
+      })(req, res);
     });
   } catch (error) {
+    console.log(error);
     throw error;
   }
 };
+
+// export const loginService = async (req, res) => {
+//   try {
+//     return new Promise((resolve, reject) => {
+//       passport.authenticate("local", async (err, user, info) => {
+//         if (err) {
+//           return reject(err);
+//         }
+//         if (!user) {
+//           return reject(new Error(info.message));
+//         }
+//         const payload = {
+//           userId: user.id,
+//           email: user.email,
+//         };
+//         const token = createResetToken(payload);
+//         user.token = token;
+//         await user.save();
+//         console.log(user);
+//         resolve({user: user });
+//       })(req);
+//     });
+//   } catch (error) {
+//     throw error;
+//   }
+// };
 
 export const getUsersService = async () => {
   try {
@@ -66,22 +91,42 @@ export const getUsersService = async () => {
 
 export const sendOTPByEmailService = async (email) => {
   const generatedOtp = generateOtp();
-  const expirationTimeMs = 5 * 60 * 1000;
+  const expirationTimeMs = 60 * 1000; // 1 minute expiration time
   const expirationTimestamp = Date.now() + expirationTimeMs;
+
+  // Prepare email content
   const mailInfo = {
-    email: email,
+    to: email,
     subject: "Your OTP for MFA",
-    content: `Your OTP is: ${generatedOtp}. This OTP is valid for 1 minute. Please use it before ${expirationTimestamp}.`,
+    text: `Your OTP is: ${generatedOtp}. This OTP is valid for 1 minute.`,
   };
-  const isSent = await sendEmail(mailInfo);
+
+  // Check if user with given email already exists
+  const existingUser = await User.findOne({ email: email });
+  if (!existingUser) {
+    // User not found, throw an error
+    const error = new Error("User not found");
+    error.status = 400;
+    throw error;
+  }
+
+  // Send email with OTP
+  let isSent = false;
+  try {
+    isSent = await sendEmail(mailInfo);
+  } catch (error) {
+    throw new Error("Failed to send OTP."); // Handle email sending failure
+  }
+
   if (isSent) {
+    // Update user with generated OTP and expiration timestamp
     try {
       await User.findOneAndUpdate(
         { email: email },
         { otp: generatedOtp, otpExpiration: expirationTimestamp }
       );
     } catch (error) {
-      throw new Error(error ? error : "Failed to send OTP.");
+      throw new Error("Failed to update user with OTP."); // Handle database update failure
     }
   }
 };
@@ -172,8 +217,8 @@ export const resetPasswordService = async (email, newPassword) => {
     }
     user.password = newPassword;
     const results = await user.save();
-    if(!results){
-      throw new Error("Failed to update password")
+    if (!results) {
+      throw new Error("Failed to update password");
     }
     return { success: true, message: "Password reset successfully", results };
   } catch (error) {
@@ -201,5 +246,5 @@ export const verifyResetTokenService = async (token) => {
 };
 
 export const updateUserProfile = async (data) => {
-  const {userName, password} = data
-}
+  const { userName, password } = data;
+};

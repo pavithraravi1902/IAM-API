@@ -1,13 +1,25 @@
-export const isAdmin = (req, res, next) => {
-  if (req.user && req.user.role === 'admin') {
-    return next(); 
-  }
-  res.status(403).send('Forbidden'); 
+const modulePermissions = {
+  user: ["admin", "user", "super user"],
+  dashboard: ["admin"],
+  profile: ["user", "admin"],
+  settings: ["user", "admin"],
+};
+
+const canAccessModule = (userRole, moduleName) => {
+  return modulePermissions[moduleName].includes(userRole);
+};
+
+ // Custom authorization middleware
+ function authorizeModule(moduleName) {
+  return function(req, res, next) {
+    const userRole = req.user?.role;
+
+    if (canAccessModule(userRole, moduleName)) {
+      next(); 
+    } else {
+      res.status(403).json({ error: 'Forbidden' });
+    }
+  };
 }
 
-export const isUser = (req, res, next) => {
-  if (req.user && req.user.role === 'user') {
-    return next(); 
-  }
-  res.status(403).send('Forbidden'); 
-}
+export default authorizeModule;

@@ -7,10 +7,11 @@ import {
   resetPassword,
   sendOtpByEmail,
   verifyEmailOtp,
-  verifyResetToken
+  verifyResetToken,
 } from "./controller.js";
 //import passport from "../../common/openid/passport.js";
 import passport from "passport";
+import authorizeModule from "../../common/openid/access.js";
 
 const router = express.Router();
 
@@ -20,20 +21,13 @@ router.post("/", createUser);
 
 router.post(
   "/login",
-  passport.authenticate(
-    "local"
-    // ,{
-    //     successRedirect: 'http://localhost:4201',
-    //     failureRedirect: 'http://localhost:4201/login',
-    //     failureFlash: true
-    //   }
-  ),
+  passport.authenticate('local'),
   login
 );
 
-router.get("/", getUsers)
+router.get("/", authorizeModule('user'), getUsers);
 
-router.post("/send-otp", sendOtpByEmail);
+router.post("/send-otp",authorizeModule('user'), sendOtpByEmail);
 
 router.post("/verify-otp", verifyEmailOtp);
 

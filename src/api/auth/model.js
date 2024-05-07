@@ -1,5 +1,5 @@
+import bcrypt from "bcrypt";
 import mongoose from "mongoose";
-import bcrypt from 'bcrypt';
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
@@ -14,18 +14,22 @@ const userSchema = new Schema({
     sparse: true,
   },
   password: { type: String },
-  googleId: { type: String, unique: true }, 
+  googleId: { type: String },
   pictureUrl: String,
   otp: String,
   otpExpiration: Date,
   resetPasswordToken: String,
   resetPasswordExpiration: Date,
-  role: String
+  role: { type: String, enum: ["user", "admin"], default: "user" },
 });
 
-userSchema.pre('save', async function(next) {
+userSchema.methods.hasPermissionForModule = function (moduleName) {
+  return canAccessModule(this.role, moduleName);
+};
+
+userSchema.pre("save", async function (next) {
   try {
-    if (!this.isModified('password')) {
+    if (!this.isModified("password")) {
       return next();
     }
     const saltRounds = 10;

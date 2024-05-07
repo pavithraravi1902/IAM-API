@@ -13,20 +13,23 @@ export const generateOtp = () => {
 };
 
 export const sendEmail = async (mailInfo) => {
-  const {email, subject, content} = mailInfo;
+  console.log(mailInfo, "mailInfo")
+  const {to, subject, text} = mailInfo;
+  console.log(to, "sendmail")
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
       user: "pavithraravi1902@gmail.com",
-      pass: "sxtd tzwb lxba sbcq", // google project password
+      pass: "woqx qffd eyvp jkgh"
+    //  https://myaccount.google.com/apppasswords
     },
   });
 
   const mailOptions = {
     from: 'pavithraravi1902@gmail.com', 
-    to: email,
+    to: to,
     subject: subject,
-    text: content,
+    text: text,
   };
 
   try {
