@@ -13,7 +13,7 @@ export const createUserService = async (userData) => {
     }
     const user = await User.create(userData);
     if (!user) {
-      const error = new Error("Error while creating user");
+      const error = new Error("User Resigration Failed");
       error.status = 400;
       throw error;
     }
@@ -26,7 +26,7 @@ export const createUserService = async (userData) => {
 export const loginService = async (req, res) => {
   try {
     return new Promise((resolve, reject) => {
-      passport.authenticate('local', async (err, user, info) => {
+      passport.authenticate("local", async (err, user, info) => {
         if (err) {
           return reject(err);
         }
@@ -44,8 +44,7 @@ export const loginService = async (req, res) => {
       })(req, res);
     });
   } catch (error) {
-    console.log(error);
-    throw error;
+    throw error ? error : "Login Failed";
   }
 };
 
@@ -79,13 +78,13 @@ export const getUsersService = async () => {
   try {
     const user = await User.find();
     if (!user) {
-      const error = new Error("Error while creating user");
+      const error = new Error("User data not found");
       error.status = 400;
       throw error;
     }
     return user;
   } catch (error) {
-    throw error;
+    throw error ? error : "Failed to fetch user data";
   }
 };
 
@@ -94,39 +93,34 @@ export const sendOTPByEmailService = async (email) => {
   const expirationTimeMs = 60 * 1000; // 1 minute expiration time
   const expirationTimestamp = Date.now() + expirationTimeMs;
 
-  // Prepare email content
   const mailInfo = {
     to: email,
     subject: "Your OTP for MFA",
     text: `Your OTP is: ${generatedOtp}. This OTP is valid for 1 minute.`,
   };
 
-  // Check if user with given email already exists
   const existingUser = await User.findOne({ email: email });
   if (!existingUser) {
-    // User not found, throw an error
     const error = new Error("User not found");
     error.status = 400;
     throw error;
   }
 
-  // Send email with OTP
   let isSent = false;
   try {
     isSent = await sendEmail(mailInfo);
   } catch (error) {
-    throw new Error("Failed to send OTP."); // Handle email sending failure
+    throw new Error("Failed to send OTP.");
   }
 
   if (isSent) {
-    // Update user with generated OTP and expiration timestamp
     try {
       await User.findOneAndUpdate(
         { email: email },
         { otp: generatedOtp, otpExpiration: expirationTimestamp }
       );
     } catch (error) {
-      throw new Error("Failed to update user with OTP."); // Handle database update failure
+      throw new Error("Failed to update user with OTP.");
     }
   }
 };
@@ -134,8 +128,11 @@ export const sendOTPByEmailService = async (email) => {
 export const verifyEmailOtpService = async (email, userOtp) => {
   try {
     const user = await User.findOne({ email: email });
+    if (!user) {
+      throw new Error("User not found");
+    }
     if (!user || !user.otp || !user.otpExpiration) {
-      throw new Error("OTP not found or expired for the user");
+      throw new Error("OTP not found");
     }
     if (Date.now() > user.otpExpiration) {
       throw new Error("OTP has expired");
@@ -153,8 +150,11 @@ export const verifyEmailOtpService = async (email, userOtp) => {
 export const verifyMobileOtpService = async (email, userOtp) => {
   try {
     const user = await User.findOne({ email: email });
+    if (!user) {
+      throw new Error("User not found");
+    }
     if (!user || !user.otp || !user.otpExpiration) {
-      throw new Error("OTP not found or expired for the user");
+      throw new Error("OTP not found");
     }
     if (Date.now() > user.otpExpiration) {
       throw new Error("OTP has expired");
@@ -191,15 +191,15 @@ export const forgotPasswordService = async (email) => {
     );
     const resetUrl = `https://localhost:3000/reset-password?token=${token}`;
     const mailInfo = {
-      email: email,
+      to: email,
       subject: `Password Update`,
-      content: `Update your password through ${resetUrl}`,
+      text: `Update your password through ${resetUrl}`,
     };
     await sendEmail(mailInfo);
     return result;
   } catch (error) {
     console.error("Error in forgotPasswordService:", error);
-    throw error;
+    throw error ? error : "Internal Error";
   }
 };
 

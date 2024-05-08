@@ -23,6 +23,8 @@
     "@babel/register": "^7.22.5",
     "@babel/runtime": "^7.22.6",
     "auth0-js": "^9.24.1",
+    "aws-sdk": "^2.1614.0",
+    "aws-sdk-mock": "^5.9.0",
     "axios": "^1.6.7",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",

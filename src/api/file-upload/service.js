@@ -1,39 +1,50 @@
-import fs from "fs";
+import AWS from "aws-sdk";
 import { FileUpload } from "./model.js";
+import s3Client from "../../common/aws/index.js";
 
-export const uploadFileService = (req, res) => {
+export const doDownloadService = async (req, res) => {
+  const filekey = req.body.filekey;
+  const params = {
+    Bucket: "userauthentication",
+    Key: filekey,
+  };
   try {
-    var uploadFile = {
-      originalFileName: req.file.originalname,
-    };
-    const file = FileUpload.create(uploadFile);
-    console.log(req.file.originalname, "file");
-    return "file";
-  } catch (err) {
-    console.log(err);
+    const s3Stream = s3Client.getObject(params).createReadStream();
+    s3Stream.on("error", (err) => {
+      console.error("Error during S3 object retrieval:", err);
+      res.status(500).json({ error: "Error retrieving file from S3" });
+    });
+
+    s3Stream.pipe(res);
+  } catch (error) {
+    console.error("Error retrieving file from S3:", error);
+    res.status(500).json({ error: "Error retrieving file from S3" });
   }
 };
 
-export const downloadFileService = async (req, res) => {
+export const doUploadService = async (req, res) => {
   try {
-    const fileKey = req.params.filekey;
-    console.log(req.params.filekey, "req.params.filekey");
-    const fileRecord = await FileUpload.findOne({
-      fileKey: "ABdFL1zl1qgq2z33krBSTttmNVkdFOYt",
+    const uploadFile = {
+      originalFileName: req.file.originalname,
+    };
+    const newFile = await FileUpload.create(uploadFile);
+
+    const uploadParams = {
+      Bucket: "userauthentication",
+      Key: newFile.fileKey,
+      Body: req.file.buffer,
+    };
+
+    s3Client.upload(uploadParams, (err, data) => {
+      if (err) {
+        console.error("Error during S3 upload:", err);
+        return res.status(500).json({ error: "Error during S3 upload" });
+      }
+
+      res.json(newFile);
     });
-    console.log(fileRecord, "fileRecord");
-    if (!fileRecord) {
-      return res.status(404).json({ message: "File not found" });
-    }
-    const filePath = fileRecord.filePath;
-    const originalFileName = fileRecord.originalFileName;
-    if (fs.existsSync(filePath)) {
-      res.download(filePath, originalFileName);
-    } else {
-      res.status(404).json({ message: "File not found" });
-    }
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: "Internal server error" });
+  } catch (error) {
+    console.error("Error during file creation:", error);
+    res.status(500).json({ error: "Error during file creation" });
   }
 };

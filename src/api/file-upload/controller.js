@@ -1,9 +1,9 @@
-import { downloadFileService, uploadFileService } from "./service.js";
+import { doDownloadService, doUploadService } from "./service.js";
 
 export const uploadFile = (req, res) => {
-  uploadFileService(req, res);
+  doUploadService(req, res);
 };
 
 export const downloadFile = (req, res) => {
-  downloadFileService(req, res);
+  doDownloadService(req, res);
 };

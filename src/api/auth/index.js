@@ -29,9 +29,9 @@ router.get("/", authorizeModule('user'), getUsers);
 
 router.post("/send-otp",authorizeModule('user'), sendOtpByEmail);
 
-router.post("/verify-otp", verifyEmailOtp);
+router.post("/verify-otp", authorizeModule('user'), verifyEmailOtp);
 
-router.post("/forgot-password", forgotPassword);
+router.post("/forgot-password",  forgotPassword);
 
 router.get("/:token", verifyResetToken);
 
