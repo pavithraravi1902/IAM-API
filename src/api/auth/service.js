@@ -1,6 +1,7 @@
 import { createResetToken, sign, verify } from "../../common/openid/jwt.js";
 import { generateOtp, sendEmail } from "../../common/openid/otp.js";
-import passport from "../../common/openid/passport.js";
+import localPassport from "../../common/passport/local.js";
+import googlePassport from "../../common/passport/google.js"
 import { ActivationToken, User } from "./model.js";
 
 export const createUserService = async (userData) => {
@@ -26,53 +27,46 @@ export const createUserService = async (userData) => {
 export const loginService = async (req, res) => {
   try {
     return new Promise((resolve, reject) => {
-      passport.authenticate("local", async (err, user, info) => {
-        if (err) {
-          return reject(err);
-        }
-        if (!user) {
-          return reject(new Error(info.message));
-        }
-        const token = await sign(user.id);
-        const activationToken = new ActivationToken({
-          user: user._id,
-          token: token,
-        });
+      const { email, password, googleId } = req.body;
 
-        await activationToken.save();
-        resolve({ token: token, user: user });
-      })(req, res);
+      if (googleId) {
+        googlePassport.authenticate("google", async (err, user, info) => {
+          if (err) {
+            return reject(err);
+          }
+          if (!user) {
+            return reject(new Error(info.message || "Google authentication failed"));
+          }
+          const token = await sign(user.id);
+          const activationToken = new ActivationToken({
+            user: user._id,
+            token: token,
+          });
+          await activationToken.save();
+          resolve({ token: token, user: user });
+        })(req, res);
+      } else {
+        localPassport.authenticate("local", async (err, user, info) => {
+          if (err) {
+            return reject(err);
+          }
+          if (!user) {
+            return reject(new Error(info.message || "Incorrect email or password"));
+          }
+          const token = await sign(user.id);
+          const activationToken = new ActivationToken({
+            user: user._id,
+            token: token,
+          });
+          await activationToken.save();
+          resolve({ token: token, user: user });
+        })(req, res);
+      }
     });
   } catch (error) {
     throw error ? error : "Login Failed";
   }
 };
-
-// export const loginService = async (req, res) => {
-//   try {
-//     return new Promise((resolve, reject) => {
-//       passport.authenticate("local", async (err, user, info) => {
-//         if (err) {
-//           return reject(err);
-//         }
-//         if (!user) {
-//           return reject(new Error(info.message));
-//         }
-//         const payload = {
-//           userId: user.id,
-//           email: user.email,
-//         };
-//         const token = createResetToken(payload);
-//         user.token = token;
-//         await user.save();
-//         console.log(user);
-//         resolve({user: user });
-//       })(req);
-//     });
-//   } catch (error) {
-//     throw error;
-//   }
-// };
 
 export const getUsersService = async () => {
   try {
@@ -189,7 +183,7 @@ export const forgotPasswordService = async (email) => {
       },
       { new: true }
     );
-    const resetUrl = `https://localhost:3000/reset-password?token=${token}`;
+    const resetUrl = `https://localhost:3001/reset-password?token=${token}`;
     const mailInfo = {
       to: email,
       subject: `Password Update`,

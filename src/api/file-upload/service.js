@@ -1,4 +1,3 @@
-import AWS from "aws-sdk";
 import { FileUpload } from "./model.js";
 import s3Client from "../../common/aws/index.js";
 

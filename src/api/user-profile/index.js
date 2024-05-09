@@ -3,8 +3,8 @@ import { createProfile, updateProfile } from "./controller.js";
 
 const router = express.Router();
 
-router.post("/", createProfile);
+router.post("/", authorizeModule('profile'), createProfile);
 
-router.put("/", updateProfile);
+router.put("/", authorizeModule('profile'), updateProfile);
 
 export default router;
