@@ -8,6 +8,12 @@ basePath: "/"
 tags:
   - name: "Users"
     description: "Users and Auths APIs"
+  - name: "Documents"
+    description: "AWS SDK File Upload"
+  - name: "Profile"
+    description: "Update User Profile"
+  - name: "Payment"
+    description: "RazorPay integration"
 schemes:
   - "http"
   - "https"
@@ -39,25 +45,30 @@ paths:
         - petstore_auth:
             - "write:pets"
             - "read:pets"
-  /users/email-verifications:
+    get: 
+      tags:
+        - "Users"
+      summary: "Retrieve all users"
+      description: ""
+  /users/login:
     post:
       tags:
         - "Users"
-      summary: "Resend the email-verifications link"
+      summary: "Login existing user"
       description: ""
-      operationId: "resendEmailVerifications"
+      operationId: "loginUser"
       produces:
         - "application/json"
       parameters:
         - in: "body"
           name: "body"
-          description: "Resend email verifications information"
+          description: "Login information"
           required: true
           schema:
-            $ref: "#/definitions/ResendVerifyEmail"
+            $ref: "#/definitions/LoginUser"
       responses:
         "201":
-          description: "A verification email has been resent successfully."
+          description: "Login successfully."
           schema:
             type: "string"
           headers:
@@ -71,6 +82,186 @@ paths:
               description: "date in UTC when token expires"
         "400":
           description: "Invalid params supplied"
+  /users/send-otp:
+    post:
+      tags:
+        - "Users"
+      summary: "Send OTP for MFA"
+      description: ""
+      operationId: "SendOtp"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Email for MFA"
+          required: true
+          schema:
+            $ref: "#/definitions/SendOtp"
+      responses:
+        "400":
+          description: "Invalid input"
+        "201":
+          description: "Otp sent successfully!"
+      security:
+        - petstore_auth:
+            - "write:pets"
+            - "read:pets"
+  /users/verify-otp:
+    post:
+      tags:
+        - "Users"
+      summary: "Verify OTP for MFA"
+      description: ""
+      operationId: "VerifyOtp"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Email for MFA"
+          required: true
+          schema:
+            $ref: "#/definitions/VerifyOtp"
+      responses:
+        "400":
+          description: "Invalid input"
+        "201":
+          description: "MFA completed successfully!"
+      security:
+        - petstore_auth:
+            - "write:pets"
+            - "read:pets"
+  /users/forgot-password:
+    post:
+      tags:
+        - "Users"
+      summary: "Forgot password"
+      description: ""
+      operationId: "forgotPassword"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Forgot password"
+          required: true
+          schema:
+            $ref: "#/definitions/ForgotPassword"
+      responses:
+        "400":
+          description: "Invalid input"
+        "201":
+          description: "MFA completed successfully!"
+      security:
+        - petstore_auth:
+            - "write:pets"
+            - "read:pets"
+  /users/reset-password:
+    post:
+      tags:
+        - "Users"
+      summary: "Reset password"
+      description: ""
+      operationId: "resetPassword"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Reset password"
+          required: true
+          schema:
+            $ref: "#/definitions/ResetPassword"
+      responses:
+        "400":
+          description: "Invalid input"
+        "201":
+          description: "Password updated successfully!"
+      security:
+        - petstore_auth:
+            - "write:pets"
+            - "read:pets"
+  /document:
+    post:
+      tags:
+        - "Documents"
+      description: "AWS SDK File upload APIs"
+      summary: "Upload document"
+      description: ""
+      operationId: "addApplication"
+      consumes:
+        - "multipart/form-data"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "formData"
+          name: "file"
+          type: "file"
+          description: "File to upload"
+          required: true
+      responses:
+        "200":
+          description: "successful operation"
+  /document/{filekey}:
+    get:
+      tags:
+        - "Documents"
+      summary: "Download a document"
+      description: "Download a file"
+      operationId: "getDocumentByFileKey"
+      produces:
+        - "application/file"
+      parameters:
+        - name: "filekey"
+          in: "path"
+          description: "File Key"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "file"
+        "404":
+          description: "Notfound"
+  paths:
+  /profile:
+    post:
+      tags:
+        - "Profile"
+      summary: "User profile"
+      description: ""
+      operationId: "userProfile"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "User profile"
+          required: true
+          schema:
+            $ref: "#/definitions/Profile"
+      responses:
+        "400":
+          description: "Invalid input"
+        "201":
+          description: "User Profile updated successfully"
+      security:
+        - petstore_auth:
+            - "write:pets"
+            - "read:pets"
+
 securityDefinitions:
   petstore_auth:
     type: "oauth2"
@@ -87,15 +278,13 @@ definitions:
   Users:
     type: "object"
     properties:
+      username:
+        type: "string"
       email:
         type: "string"
       password:
         type: "string"
-      name:
-        type: "string"
-      profileURL:
-        type: "string"
-      activationLink:
+      role:
         type: "string"
     xml:
       name: "Users"
@@ -106,14 +295,14 @@ definitions:
         type: "string"
       password:
         type: "string"
+      role:
+        type: "string"
     xml:
       name: "Users"
-  ResendVerifyEmail:
+  ForgotPassword:
     type: "object"
     properties:
       email:
-        type: "string"
-      activationLink:
         type: "string"
     xml:
       name: "Users"
@@ -122,36 +311,50 @@ definitions:
     properties:
       email:
         type: "string"
-      link:
+      newPassword:
         type: "string"
-        description: "password reset url"
     xml:
       name: "PasswordResets"
-  TokenResponse:
-    type: "object"
-    properties:
-      token:
-        type: "string"
-      user:
-        type: "object"
-        properties:
-          email:
-            type: "string"
-          name:
-            type: "string"
-          profileURL:
-            type: "string"
-  UserResponseObj:
+  SendOtp:
     type: "object"
     properties:
       email:
         type: "string"
-      name:
-        type: "string"
-      profileURL:
-        type: "string"
-  password:
+    xml:
+      name: "SendOtp"
+  VerifyOtp:
     type: "object"
     properties:
-      password:
+      email: 
         type: "string"
+      otp:
+        type: "string"
+    xml:
+      name: "VerifyOtp"
+  ResetPassword:
+    type: "object"
+    properties:
+      email: 
+        type: "string"
+      newPassword:
+        type: "string"
+    xml:
+      name: "ResetPassword"
+  Profile:
+    type: "object"
+    properties:
+      userId: 
+        type: "string"
+      firstname: 
+        type: "string"
+      lastname:
+        type: "string"
+      DOB:
+        type: "string"
+      mobileNumber: 
+        type: "string"
+      email:
+        type: "string"
+    xml:
+      name: "ResetPassword"
+  

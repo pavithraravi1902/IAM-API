@@ -9,15 +9,12 @@ import {
   verifyEmailOtp,
   verifyResetToken,
 } from "./controller.js";
-//import passport from "../../common/openid/passport.js";
 import passport from "passport";
 import authorizeModule from "../../common/openid/access.js";
 
 const router = express.Router();
 
 router.post("/", createUser);
-
-//router.post("/google", sigin)
 
 router.post(
   "/login",
@@ -27,9 +24,9 @@ router.post(
 
 router.get("/", authorizeModule('user'), getUsers);
 
-router.post("/send-otp",authorizeModule('user'), sendOtpByEmail);
+router.post("/send-otp", sendOtpByEmail);
 
-router.post("/verify-otp", authorizeModule('user'), verifyEmailOtp);
+router.post("/verify-otp", verifyEmailOtp);
 
 router.post("/forgot-password",  forgotPassword);
 

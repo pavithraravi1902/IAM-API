@@ -2,7 +2,7 @@ import { FileUpload } from "./model.js";
 import s3Client from "../../common/aws/index.js";
 
 export const doDownloadService = async (req, res) => {
-  const filekey = req.body.filekey;
+  const filekey = req.params.fileKey;
   const params = {
     Bucket: "userauthentication",
     Key: filekey,
@@ -13,7 +13,7 @@ export const doDownloadService = async (req, res) => {
       console.error("Error during S3 object retrieval:", err);
       res.status(500).json({ error: "Error retrieving file from S3" });
     });
-
+    console.log(res, "download res");
     s3Stream.pipe(res);
   } catch (error) {
     console.error("Error retrieving file from S3:", error);

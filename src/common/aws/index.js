@@ -12,12 +12,12 @@ const bucketParams = {
   Bucket: 'userauthentication',
 };
 
-// s3Client.createBucket(bucketParams, (err, data) => {
-//   if (err) {
-//     console.error('Error creating bucket:', err);
-//   } else {
-//     console.log('Bucket created successfully:', data.Location);
-//   }
-// });
+s3Client.createBucket(bucketParams, (err, data) => {
+  if (err) {
+    console.error('Error creating bucket:', err);
+  } else {
+    console.log('Bucket created successfully:', data.Location);
+  }
+});
 
 export default s3Client;
