@@ -25,7 +25,6 @@ passport.use(new GoogleStrategy({
           googleId: profile.id,
           pictureUrl: profile.pictureUrl
         }
-        console.log(profileData, "profileData")
         if (!user) {
           user = await User.create(profileData);
         }

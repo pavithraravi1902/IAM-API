@@ -15,7 +15,6 @@ const razorPayment = async (amount, currency, receipt) => {
       receipt: receipt,
     };
     const order = await this.razorpay.orders.create(options);
-    console.log(order, "order")
     return order;
   } catch (error) {
     throw new Error("Failed to create order");

@@ -32,16 +32,13 @@ passport.use(
 
 // Serialize/deserialize user
 passport.serializeUser((user, done) => {
-  console.log(user, "serializeUser");
   done(null, { id: user.id, email: user.email, role: user.role });
 });
 
 passport.deserializeUser(async (id, done) => {
-  console.log(id, "serializeId");
   try {
     const objectId = new ObjectId(id);
     const user = await User.findById(objectId);
-    console.log(user, "serializeUser");
     done(null, user);
   } catch (error) {
     done(error);

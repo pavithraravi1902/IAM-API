@@ -13,9 +13,7 @@ export const generateOtp = () => {
 };
 
 export const sendEmail = async (mailInfo) => {
-  console.log(mailInfo, "mailInfo")
   const {to, subject, text} = mailInfo;
-  console.log(to, "sendmail")
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {

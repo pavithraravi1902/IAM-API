@@ -21,3 +21,19 @@ const FileUploadSchema = new Schema({
 export const FileUpload = mongoose.model("FileUpload", FileUploadSchema);
 
 export const schema = FileUpload.schema;
+
+const LocalUploadSchema = new Schema({
+  filename: {
+    type: String,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+export const LocalFileUpload = mongoose.model("LocalFileUpload", LocalUploadSchema);
+
+export const localschema = LocalFileUpload.schema;
+
+

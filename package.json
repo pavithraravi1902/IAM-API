@@ -1,6 +1,7 @@
 {
   "name": "user-authentication",
   "version": "1.0.0",
+  "type": "module",
   "description": "User authentication system built with Node.js, Express.js, and MongoDB",
   "main": "src/app.js",
   "scripts": {
@@ -16,8 +17,9 @@
   ],
   "author": "Pavithra",
   "license": "ISC",
-  "type": "module",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.577.0",
+    "@aws-sdk/lib-storage": "^3.578.0",
     "@babel/plugin-proposal-export-default-from": "^7.22.5",
     "@babel/plugin-transform-runtime": "^7.22.7",
     "@babel/register": "^7.22.5",
@@ -40,6 +42,8 @@
     "express": "^4.18.3",
     "express-openid-connect": "^2.17.1",
     "express-session": "^1.18.0",
+    "fs": "^0.0.1-security",
+    "http": "^0.0.1-security",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "mongoose": "^8.2.0",
@@ -61,9 +65,9 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.23.9",
-    "@babel/core": "^7.24.0",
-    "@babel/preset-env": "^7.24.0",
+    "@babel/cli": "^7.24.5",
+    "@babel/core": "^7.24.5",
+    "@babel/preset-env": "^7.24.5",
     "babel-eslint": "^10.1.0",
     "eslint": "^8.44.0",
     "eslint-config-standard": "^17.1.0",

@@ -6,7 +6,8 @@ const paymentSchema = new mongoose.Schema({
   currency: { type: String },
   receiptNumber: { type: String },
   userId: { type: String },
-  paymentId: { type: String, unique: true },
+  merchantId: { type: String },
+  paymentId: { type: String},
   paymentStatus: {
     type: String,
   },
@@ -16,7 +17,7 @@ const paymentSchema = new mongoose.Schema({
   customerName: { type: String },
   customerEmail: { type: String },
   customerPhone: { type: String },
-  transactionId: { type: String, unique: true },
+  transactionId: { type: String},
   transactionStatus: {
     type: String,
   },

@@ -82,15 +82,12 @@ export default (apiRoot, routes) => {
 
   // Serialize/deserialize user
   passport.serializeUser((user, done) => {
-    console.log(user, "serializeUser");
     done(null, { id: user.id, email: user.email, role: user.role });
   });
 
   passport.deserializeUser(async (id, done) => {
-    console.log(id, "deserializeUser");
     try {
       const user = await User.findById(id);
-      console.log(id, "deserializeUser");
       done(null, user);
     } catch (error) {
       done(error);
