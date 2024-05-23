@@ -261,7 +261,98 @@ paths:
         - petstore_auth:
             - "write:pets"
             - "read:pets"
-
+  /payment/order:
+    post:
+      tags:
+        - "Payment"
+      summary: "Razorpay Payment"
+      description: ""
+      operationId: "orderRazorPay"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Razorpay Payment"
+          required: true
+          schema:
+            $ref: "#/definitions/OrderPayment"
+      responses:
+        "400":
+          description: "Invalid input"
+        "201":
+          description: "Order created  successfully"
+  /payment/verify-payment:
+    post:
+      tags:
+        - "Payment"
+      summary: "Razorpay Payment Verification"
+      description: ""
+      operationId: "razorpayVerification"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Razorpay Payment Verification"
+          required: true
+          schema:
+            $ref: "#/definitions/VerifyPayment"
+      responses:
+        "400":
+          description: "Invalid input"
+        "201":
+          description: "Payment verified successfully"
+  /payment/refund:
+    post:
+      tags:
+        - "Payment"
+      summary: "Razorpay Payment"
+      description: ""
+      operationId: "razorpayRefund"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Refund Razorpay Payment"
+          required: true
+          schema:
+            $ref: "#/definitions/RefundPayment"
+      responses:
+        "400":
+          description: "Invalid input"
+        "201":
+          description: "Successfully Refunded"
+  /payment/partial-refund:
+    post:
+      tags:
+        - "Payment"
+      summary: "Razorpay Payment"
+      description: ""
+      operationId: "partialRefund"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Partial Refund Razorpay Payment"
+          required: true
+          schema:
+            $ref: "#/definitions/PartialRefund"
+      responses:
+        "400":
+          description: "Invalid input"
+        "201":
+          description: "Successfully Refunded"
 securityDefinitions:
   petstore_auth:
     type: "oauth2"
@@ -357,4 +448,47 @@ definitions:
         type: "string"
     xml:
       name: "ResetPassword"
-  
+  OrderPayment:
+    type: "object"
+    properties:
+      orderId:
+        type: "string"
+      amount: 
+        type: "number"
+      currency: 
+        type: "string"
+      userId: 
+        type: "string"
+      customerName:
+        type: "string"
+      customerEmail:
+        type: "string"
+      customerPhone:
+        type: "string"
+    xml:
+      name: "OrderPayment"
+  VerifyPayment:
+    type: "object"
+    properties:
+      razorpay_payment_id:
+        type: "string"
+      razorpay_order_id: 
+        type: "string"
+      razorpay_signature: 
+        type: "string"
+    xml:
+      name: "verifyPayment"
+  RefundPayment:
+    type: "object"
+    properties:
+      paymentId:
+        type: "string"
+    xml:
+      name: "RefundPayment"
+  PartialRefundPayment:
+    type: "object"
+    properties: 
+      paymentId: 
+        type: "string"
+    xml:
+      name: "PartialRefundPayment"

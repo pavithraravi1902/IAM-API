@@ -1,83 +1,11 @@
-// import Razorpay from "razorpay";
-// import { Payment } from "./model.js";
-// import crypto from "crypto";
-
-// const razorPaySecretKey = "gPRG86NZn3wV7A7MGVNfnERS";
-// const razorPayId = "rzp_test_bkFrzP8pjtrHDc";
-// const webookURL = "https://userauthentication/webhook";
-// const webookSecret = "userAuthWebBook";
-
-// const razorpayPayment = new Razorpay({
-//   key_id: razorPayId,
-//   key_secret: razorPaySecretKey,
-// });
-
-// export const createPaymentService = async (paymentData) => {
-//   const { amount, currency, receipt } = paymentData;
-//   try {
-//     const options = {
-//       amount: amount,
-//       currency: currency,
-//       receipt: receipt,
-//       payment_capture: 1,
-//     };
-//     const order = await razorpayPayment.orders.create(options);
-//     const payment = new Payment({
-//       orderId: order.id,
-//       amount: order.amount,
-//       currency: order.currency,
-//       receipt: order.receipt,
-//     });
-//     await payment.save();
-//     return payment;
-//   } catch (error) {
-//   }
-// };
-
-// export const verifySignature = async (
-//   razorpay_order_id,
-//   razorpay_payment_id,
-//   razorpay_signature
-// ) => {
-//   const generatedSignature = crypto
-//     .createHmac("sha256", razorPaySecretKey)
-//     .update(razorpay_order_id + "|" + razorpay_payment_id)
-//     .digest("hex");
-
-//   return generatedSignature === razorpay_signature;
-// };
-
-// export const verifyPaymentService = async (paymentData) => {
-//   const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
-//     paymentData;
-//   if (
-//     !verifySignature(razorpay_order_id, razorpay_payment_id, razorpay_signature)
-//   ) {
-//     throw new Error("Invalid signature");
-//   }
-//   try {
-//     const payment = await razorpayPayment.payments.fetch(razorpay_payment_id);
-//     if (payment.status !== "captured") {
-//       throw new Error("Payment not successful");
-//     }
-//     await Payment.findOneAndUpdate(
-//       { orderId: razorpay_order_id },
-//       { status: "success" }
-//     );
-//     const updatedPayment = await Payment.findOne({
-//       orderId: razorpay_order_id,
-//     });
-//     return { success: true, payment: updatedPayment };
-//   } catch (error) {
-//     throw new Error(error ? error : "Payment verification failed");
-//   }
-// };
-
-
 import Razorpay from "razorpay";
 import { Payment } from "./model.js";
 import crypto from "crypto";
 
+//mahesh
+// const razorPayId = 'rzp_test_nLdVp2LWvwUtaL'
+// const razorPaySecretKey = 'r1X4K6n7qGnjDA52P8uAkA2e'
+//pavithra
 const razorPaySecretKey = "gPRG86NZn3wV7A7MGVNfnERS";
 const razorPayId = "rzp_test_bkFrzP8pjtrHDc";
 const webhookURL = "https://userauthentication/webhook";
@@ -89,7 +17,19 @@ const razorpayPayment = new Razorpay({
 });
 
 export const createPaymentService = async (paymentData) => {
-  const { amount, currency, receipt, userId, customerName, customerEmail, customerPhone, additionalNotes, addressDetails, createdBy, updatedBy } = paymentData;
+  const {
+    amount,
+    currency,
+    receipt,
+    userId,
+    customerName,
+    customerEmail,
+    customerPhone,
+    additionalNotes,
+    addressDetails,
+    createdBy,
+    updatedBy,
+  } = paymentData;
   try {
     const options = {
       amount: amount * 100,
@@ -98,21 +38,19 @@ export const createPaymentService = async (paymentData) => {
       payment_capture: 1,
     };
     const order = await razorpayPayment.orders.create(options);
-    console.log(order, "order")
     const payment = new Payment({
       orderId: order.id,
       amount: amount,
       currency: order.currency,
-      receiptNumber: order.receipt,
       userId: userId,
-      paymentStatus: 'created',
+      paymentStatus: "created",
       paymentAmount: order.amount,
-      paymentMethod: 'razorpay',
+      paymentMethod: "razorpay",
       customerName: customerName,
       customerEmail: customerEmail,
       customerPhone: customerPhone,
-      transactionStatus: 'pending',
-      transactionType: 'order',
+      transactionStatus: "pending",
+      transactionType: "order",
       additionalNotes: additionalNotes,
       addressDetails: addressDetails,
       createdBy: createdBy,
@@ -121,12 +59,15 @@ export const createPaymentService = async (paymentData) => {
     await payment.save();
     return payment;
   } catch (error) {
-    console
-    throw new Error(error ? error : 'Failed to create payment');
+    throw new Error(error ? error : "Failed to create payment");
   }
 };
 
-const verifySignature = (razorpay_order_id, razorpay_payment_id, razorpay_signature) => {
+const verifySignature = (
+  razorpay_order_id,
+  razorpay_payment_id,
+  razorpay_signature
+) => {
   const generatedSignature = crypto
     .createHmac("sha256", razorPaySecretKey)
     .update(razorpay_order_id + "|" + razorpay_payment_id)
@@ -136,8 +77,11 @@ const verifySignature = (razorpay_order_id, razorpay_payment_id, razorpay_signat
 };
 
 export const verifyPaymentService = async (paymentData) => {
-  const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = paymentData;
-  if (!verifySignature(razorpay_order_id, razorpay_payment_id, razorpay_signature)) {
+  const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+    paymentData;
+  if (
+    !verifySignature(razorpay_order_id, razorpay_payment_id, razorpay_signature)
+  ) {
     throw new Error("Invalid signature");
   }
   try {
@@ -146,7 +90,7 @@ export const verifyPaymentService = async (paymentData) => {
       throw new Error("Payment not successful");
     }
     await Payment.findOneAndUpdate(
-      { orderId: razorpay_order_id},
+      { orderId: razorpay_order_id },
       {
         paymentStatus: "success",
         paymentAmount: payment.amount / 100,
@@ -154,9 +98,6 @@ export const verifyPaymentService = async (paymentData) => {
         merchantId: "O8LM3jYcSIDTnv",
         paymentMethod: payment.method,
         paymentDate: payment.created_at,
-        transactionId: payment.id,
-        transactionStatus:"success",
-        gatewayResponse: payment,
         updatedAt: new Date(),
       },
       { new: true }
@@ -164,34 +105,66 @@ export const verifyPaymentService = async (paymentData) => {
     const updatedPayment = await Payment.findOne({
       orderId: razorpay_order_id,
     });
-    console.log(updatedPayment);
-    return {success: true, payment: updatedPayment };
+    return { success: true, payment: updatedPayment };
   } catch (error) {
     throw new Error(error ? error : "Payment verification failed");
   }
 };
 
+export const calculatePartialRefundAmount = (paymentAmount, refundPercentage)=> {
+  return Math.floor((paymentAmount * refundPercentage) / 100);
+}
+
 export const refundPaymentService = async (paymentData) => {
-  const {paymentId, amount} = paymentData;
+  const { paymentId } = paymentData;
   try {
     const actualPayment = await Payment.findOne({ paymentId });
-    if(!paymentId){
-      throw new Error('Payment Id not found.')
+    if (!paymentId) {
+      throw new Error("Payment Id not found.");
     }
-    if (amount !== actualPayment.paymentAmount / 100) {
-      throw new Error('Refund amount does not match the original payment amount');
-    }
+    const amount = actualPayment.paymentAmount;
     const refundAmount = amount * 100;
-    const refund = await razorpayPayment.payments.refund(paymentId, { amount: refundAmount});
-    console.log(refund, "refund")
+    const refund = await razorpayPayment.payments.refund(paymentId, {
+      amount: refundAmount,  speed: "optimum",
+    });
+    const paiseAmt = refund.amount / 100;
     await Payment.findOneAndUpdate(
       { paymentId },
-      { paymentStatus: "refunded", refundId: refund.id }
+      { paymentStatus: "refunded", refundId: refund.id, refundAmount: paiseAmt }
     );
     const updatedPayment = await Payment.findOne({ paymentId });
     return { success: true, refund: updatedPayment };
   } catch (error) {
     console.log(error);
-    throw new Error(error ? error : "Refund failed");
+    throw new Error(error ? error.error.description : "Refund failed");
   }
+};
+
+export const partialRefundService = async (paymentId, refundAmount) => {
+  const amtInPaise = refundAmount * 100;
+  try {
+    const refund = await razorpayPayment.payments.refund(paymentId, {
+      amount: amtInPaise,
+    });
+    console.log("Refund successful:", refund);
+    return refund;
+  } catch (error) {
+    console.error("Error creating refund:", error);
+    throw error;
+  }
+};
+
+export const processRefundService = async (
+paymentData
+) => {
+  const { paymentId, paymentAmount, refundPercentage } = paymentData;
+  const refundAmount = calculatePartialRefundAmount(
+    paymentAmount,
+    refundPercentage
+  );
+  console.log(
+    `Refunding ${refundPercentage}% of ${paymentAmount} which is ${refundAmount}`
+  );
+  const refund = await partialRefundService(paymentId, refundAmount);
+  console.log("Refund processed:", refund);
 };

@@ -1,6 +1,12 @@
 import Razorpay from "razorpay";
 
-//Razor pay credentials
+// // mahesh Razor pay credentials
+// const razorpay = new Razorpay({
+//   key_id: "rzp_test_nLdVp2LWvwUtaL",
+//   key_secret: "r1X4K6n7qGnjDA52P8uAkA2e",
+// });
+
+// pavithra Razor pay credentials
 const razorpay = new Razorpay({
   key_id: "rzp_test_bkFrzP8pjtrHDc",
   key_secret: "gPRG86NZn3wV7A7MGVNfnERS",
