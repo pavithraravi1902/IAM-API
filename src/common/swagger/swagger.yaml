@@ -42,14 +42,24 @@ paths:
         "201":
           description: "User registration completed successfully"
       security:
-        - petstore_auth:
-            - "write:pets"
-            - "read:pets"
+        - api_key: []
     get: 
       tags:
         - "Users"
       summary: "Retrieve all users"
       description: ""
+      operationId: "getUsers"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "Successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Users"
+        "400":
+          description: "Invalid request"
   /users/login:
     post:
       tags:
@@ -88,7 +98,7 @@ paths:
         - "Users"
       summary: "Send OTP for MFA"
       description: ""
-      operationId: "SendOtp"
+      operationId: "sendOtp"
       consumes:
         - "application/json"
       produces:
@@ -104,18 +114,16 @@ paths:
         "400":
           description: "Invalid input"
         "201":
-          description: "Otp sent successfully!"
+          description: "OTP sent successfully!"
       security:
-        - petstore_auth:
-            - "write:pets"
-            - "read:pets"
+        - api_key: []
   /users/verify-otp:
     post:
       tags:
         - "Users"
       summary: "Verify OTP for MFA"
       description: ""
-      operationId: "VerifyOtp"
+      operationId: "verifyOtp"
       consumes:
         - "application/json"
       produces:
@@ -123,7 +131,7 @@ paths:
       parameters:
         - in: "body"
           name: "body"
-          description: "Email for MFA"
+          description: "Email and OTP for MFA"
           required: true
           schema:
             $ref: "#/definitions/VerifyOtp"
@@ -133,9 +141,7 @@ paths:
         "201":
           description: "MFA completed successfully!"
       security:
-        - petstore_auth:
-            - "write:pets"
-            - "read:pets"
+        - api_key: []
   /users/forgot-password:
     post:
       tags:
@@ -158,11 +164,9 @@ paths:
         "400":
           description: "Invalid input"
         "201":
-          description: "MFA completed successfully!"
+          description: "Password reset instructions sent successfully!"
       security:
-        - petstore_auth:
-            - "write:pets"
-            - "read:pets"
+        - api_key: []
   /users/reset-password:
     post:
       tags:
@@ -187,17 +191,14 @@ paths:
         "201":
           description: "Password updated successfully!"
       security:
-        - petstore_auth:
-            - "write:pets"
-            - "read:pets"
+        - api_key: []
   /document:
     post:
       tags:
         - "Documents"
-      description: "AWS SDK File upload APIs"
       summary: "Upload document"
-      description: ""
-      operationId: "addApplication"
+      description: "AWS SDK File upload APIs"
+      operationId: "uploadDocument"
       consumes:
         - "multipart/form-data"
       produces:
@@ -210,7 +211,7 @@ paths:
           required: true
       responses:
         "200":
-          description: "successful operation"
+          description: "Successful operation"
   /document/{filekey}:
     get:
       tags:
@@ -219,7 +220,7 @@ paths:
       description: "Download a file"
       operationId: "getDocumentByFileKey"
       produces:
-        - "application/file"
+        - "application/octet-stream"
       parameters:
         - name: "filekey"
           in: "path"
@@ -228,19 +229,18 @@ paths:
           type: "string"
       responses:
         "200":
-          description: "successful operation"
+          description: "Successful operation"
           schema:
             type: "file"
         "404":
-          description: "Notfound"
-  paths:
+          description: "File not found"
   /profile:
     post:
       tags:
         - "Profile"
-      summary: "User profile"
+      summary: "Create or update user profile"
       description: ""
-      operationId: "userProfile"
+      operationId: "createOrUpdateUserProfile"
       consumes:
         - "application/json"
       produces:
@@ -256,18 +256,82 @@ paths:
         "400":
           description: "Invalid input"
         "201":
-          description: "User Profile updated successfully"
-      security:
-        - petstore_auth:
-            - "write:pets"
-            - "read:pets"
+          description: "User profile created/updated successfully"
+    get:
+      tags:
+        - "Profile"
+      summary: "Retrieve all user profiles"
+      description: ""
+      operationId: "getAllUserProfiles"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "Successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Profile"
+        "400":
+          description: "Invalid input"
+  /profile/{userId}:
+    put:
+      tags:
+        - "Profile"
+      summary: "Update user profile"
+      description: ""
+      operationId: "updateUserProfile"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userId"
+          in: "path"
+          description: "ID of user to update"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Updated user profile"
+          required: true
+          schema:
+            $ref: "#/definitions/Profile"
+      responses:
+        "400":
+          description: "Invalid input"
+        "201":
+          description: "User profile updated successfully"
+    get:
+      tags:
+        - "Profile"
+      summary: "Get user profile by userId"
+      description: ""
+      operationId: "getUserProfileByUserId"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userId"
+          in: "path"
+          description: "ID of user to retrieve"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Profile"
+        "400":
+          description: "Invalid userId supplied"
+        "404":
+          description: "User not found"
   /payment/order:
     post:
       tags:
         - "Payment"
-      summary: "Razorpay Payment"
+      summary: "Create Razorpay Pay Order"
       description: ""
-      operationId: "orderRazorPay"
+      operationId: "createRazorPayOrder"
       consumes:
         - "application/json"
       produces:
@@ -283,14 +347,14 @@ paths:
         "400":
           description: "Invalid input"
         "201":
-          description: "Order created  successfully"
+          description: "Order created successfully"
   /payment/verify-payment:
     post:
       tags:
         - "Payment"
       summary: "Razorpay Payment Verification"
       description: ""
-      operationId: "razorpayVerification"
+      operationId: "verifyRazorPayPayment"
       consumes:
         - "application/json"
       produces:
@@ -311,9 +375,9 @@ paths:
     post:
       tags:
         - "Payment"
-      summary: "Razorpay Payment"
+      summary: "Razorpay Refund"
       description: ""
-      operationId: "razorpayRefund"
+      operationId: "refundRazorPayPayment"
       consumes:
         - "application/json"
       produces:
@@ -321,7 +385,7 @@ paths:
       parameters:
         - in: "body"
           name: "body"
-          description: "Refund Razorpay Payment"
+          description: "Razorpay Refund"
           required: true
           schema:
             $ref: "#/definitions/RefundPayment"
@@ -329,14 +393,14 @@ paths:
         "400":
           description: "Invalid input"
         "201":
-          description: "Successfully Refunded"
+          description: "Successfully refunded"
   /payment/partial-refund:
     post:
       tags:
         - "Payment"
-      summary: "Razorpay Payment"
+      summary: "Razorpay Partial Refund"
       description: ""
-      operationId: "partialRefund"
+      operationId: "partialRefundRazorPayPayment"
       consumes:
         - "application/json"
       produces:
@@ -352,15 +416,8 @@ paths:
         "400":
           description: "Invalid input"
         "201":
-          description: "Successfully Refunded"
+          description: "Successfully refunded"
 securityDefinitions:
-  petstore_auth:
-    type: "oauth2"
-    authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
-    flow: "implicit"
-    scopes:
-      write:pets: "modify pets in your account"
-      read:pets: "read your pets"
   api_key:
     type: "apiKey"
     name: "api_key"
@@ -389,14 +446,14 @@ definitions:
       role:
         type: "string"
     xml:
-      name: "Users"
+      name: "LoginUser"
   ForgotPassword:
     type: "object"
     properties:
       email:
         type: "string"
     xml:
-      name: "Users"
+      name: "ForgotPassword"
   PasswordResets:
     type: "object"
     properties:
@@ -447,7 +504,7 @@ definitions:
       email:
         type: "string"
     xml:
-      name: "ResetPassword"
+      name: "Profile"
   OrderPayment:
     type: "object"
     properties:
@@ -477,7 +534,7 @@ definitions:
       razorpay_signature: 
         type: "string"
     xml:
-      name: "verifyPayment"
+      name: "VerifyPayment"
   RefundPayment:
     type: "object"
     properties:
@@ -485,10 +542,12 @@ definitions:
         type: "string"
     xml:
       name: "RefundPayment"
-  PartialRefundPayment:
+  PartialRefund:
     type: "object"
     properties: 
       paymentId: 
         type: "string"
+      amount:
+        type: "number"
     xml:
-      name: "PartialRefundPayment"
+      name: "PartialRefund"

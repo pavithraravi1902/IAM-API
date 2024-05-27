@@ -1,6 +1,6 @@
+import crypto from "crypto";
 import Razorpay from "razorpay";
 import { Payment } from "./model.js";
-import crypto from "crypto";
 
 //mahesh
 // const razorPayId = 'rzp_test_nLdVp2LWvwUtaL'
@@ -111,9 +111,12 @@ export const verifyPaymentService = async (paymentData) => {
   }
 };
 
-export const calculatePartialRefundAmount = (paymentAmount, refundPercentage)=> {
+export const calculatePartialRefundAmount = (
+  paymentAmount,
+  refundPercentage
+) => {
   return Math.floor((paymentAmount * refundPercentage) / 100);
-}
+};
 
 export const refundPaymentService = async (paymentData) => {
   const { paymentId } = paymentData;
@@ -125,7 +128,8 @@ export const refundPaymentService = async (paymentData) => {
     const amount = actualPayment.paymentAmount;
     const refundAmount = amount * 100;
     const refund = await razorpayPayment.payments.refund(paymentId, {
-      amount: refundAmount,  speed: "optimum",
+      amount: refundAmount,
+      speed: "optimum",
     });
     const paiseAmt = refund.amount / 100;
     await Payment.findOneAndUpdate(
@@ -154,9 +158,7 @@ export const partialRefundService = async (paymentId, refundAmount) => {
   }
 };
 
-export const processRefundService = async (
-paymentData
-) => {
+export const processRefundService = async (paymentData) => {
   const { paymentId, paymentAmount, refundPercentage } = paymentData;
   const refundAmount = calculatePartialRefundAmount(
     paymentAmount,

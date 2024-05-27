@@ -15,17 +15,67 @@ export const createProfileService = async (profileData) => {
   }
 };
 
-export const updateProfileService = async (profileData) => {
+export const getUserProfileByIdService = async (params) => {
+  console.log(params, "incoming params")
+  const userId = params.userId;
+  try {
+    if (!userId) {
+      throw new Error("Invalid params");
+    }
+    const user = ProfileSchema.findOne({ userId: userId });
+    if (!user) {
+      throw new Error("User not found");
+    }
+    return user;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+export const deleteUserByIdService = async (params) => {
+  try {
+    const userId = params;
+    if (!userId) {
+      throw new Error("Invalid params");
+    }
+    const user = ProfileSchema.findById({ userId: userId });
+    if (!user) {
+      throw new Error("User not found");
+    }
+    const removeProfile = ProfileSchema.findOneAndDelete({ userId: userId });
+    if (!removeProfile) {
+      throw new Error("Failed to delete user profile");
+    }
+    return removeProfile;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+export const getAllUserService = async () => {
+  try {
+    const user = ProfileSchema.find();
+    if (!user) {
+      throw new Error("Failed to retireve user profile data");
+    }
+    return user;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+export const updateProfileService = async (params, body) => {
+  const userId = params.userId;
   try {
     const user = await ProfileSchema.findOne({
-      profileData: userData.email,
+      userId: userId,
     });
     if (!user) {
       throw new Error("User not found");
     }
     const updateUser = await ProfileSchema.findOneAndUpdate(
-      { email: email },
-      profileData
+      { userId: userId },
+      body
     );
     return updateUser;
   } catch (err) {

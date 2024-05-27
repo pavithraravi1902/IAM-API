@@ -1,33 +1,3 @@
-// import AWS from "aws-sdk";
-
-// const s3Client = new AWS.S3({
-//   endpoint: 'http://localhost:4566',
-//   accessKeyId: 'awsUserAuthentication',  
-//   secretAccessKey: 'awsUserAuthenticationKey',  
-//   region: 'eu-west-1',  
-//   s3ForcePathStyle: true,  
-// });
-
-// const bucketParams = {
-//   Bucket: 'userauthentication',
-// };
-
-// s3Client.createBucket(bucketParams, (err, data) => {
-//   if (err) {
-//     console.error('Error creating bucket:', err);
-//   } else {
-//   }
-// });
-
-// s3Client.listBuckets((err, data) => {
-//   if (err) {
-//     console.error('Error listing S3 buckets:', err);
-//   } else {
-//   }
-// });
-
-// export default s3Client;
-
 import { S3Client, CreateBucketCommand, ListBucketsCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
 
 // Configure the AWS SDK to use LocalStack
