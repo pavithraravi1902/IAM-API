@@ -10,6 +10,7 @@ import LocalStrategy from "passport-local";
 import path from "path";
 import { errorHandler as queryErrorHandler } from "querymen";
 import { User } from "../../api/auth/model.js";
+import bodyParser from "body-parser";
 
 export default (apiRoot, routes) => {
   const app = express();
@@ -50,6 +51,7 @@ export default (apiRoot, routes) => {
   // Body parsing
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+  app.use(bodyParser.urlencoded({ limit: '100mb', extended: true }));
 
   // CORS
   app.use(cors(corsOptions));
@@ -72,7 +74,7 @@ export default (apiRoot, routes) => {
             return done(null, false, { message: "Incorrect password" });
           }
 
-          return done(null, user); // User authenticated successfully
+          return done(null, user); 
         } catch (error) {
           return done(error);
         }

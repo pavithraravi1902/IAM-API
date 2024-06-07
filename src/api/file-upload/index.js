@@ -20,7 +20,7 @@ router.post("/local", localupload.single("file"), localUpload);
 
 router.get("/:fileKey", downloadFile);
 
-router.get("/download/:filename", localDownload);
+router.get("/local/:filename", localDownload);
 
 router.post("/upload", dockerUpload.single("file"), (req, res) => {
   res.send("File uploaded successfully!");

@@ -60,6 +60,7 @@
     "querymen": "^2.1.4",
     "rand-token": "^1.0.1",
     "razorpay": "^2.9.3",
+    "react-toastify": "^10.0.5",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "yamljs": "^0.3.0"

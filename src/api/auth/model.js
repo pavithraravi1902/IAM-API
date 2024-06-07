@@ -18,9 +18,8 @@ const userSchema = new Schema({
   pictureUrl: String,
   otp: String,
   otpExpiration: Date,
-  resetPasswordToken: String,
-  resetPasswordExpiration: Date,
   role: { type: String, enum: ["user", "admin"], default: "user" },
+  isActive: Boolean
 });
 
 userSchema.methods.hasPermissionForModule = function (moduleName) {

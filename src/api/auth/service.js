@@ -1,7 +1,7 @@
 import { createResetToken, sign, verify } from "../../common/openid/jwt.js";
 import { generateOtp, sendEmail } from "../../common/openid/otp.js";
 import localPassport from "../../common/passport/local.js";
-import googlePassport from "../../common/passport/google.js"
+import googlePassport from "../../common/passport/google.js";
 import { ActivationToken, User } from "./model.js";
 
 export const createUserService = async (userData) => {
@@ -35,7 +35,9 @@ export const loginService = async (req, res) => {
             return reject(err);
           }
           if (!user) {
-            return reject(new Error(info.message || "Google authentication failed"));
+            return reject(
+              new Error(info.message || "Google authentication failed")
+            );
           }
           const token = await sign(user.id);
           const activationToken = new ActivationToken({
@@ -51,7 +53,9 @@ export const loginService = async (req, res) => {
             return reject(err);
           }
           if (!user) {
-            return reject(new Error(info.message || "Incorrect email or password"));
+            return reject(
+              new Error(info.message || "Incorrect email or password")
+            );
           }
           const token = await sign(user.id);
           const activationToken = new ActivationToken({
@@ -84,12 +88,12 @@ export const getUsersService = async () => {
 
 export const sendOTPByEmailService = async (email) => {
   const generatedOtp = generateOtp();
-  const expirationTimeMs = 60 * 1000; // 1 minute expiration time
+  const expirationTimeMs = 60 * 1000;
   const expirationTimestamp = Date.now() + expirationTimeMs;
 
   const mailInfo = {
     to: email,
-    subject: "Your OTP for MFA",
+    subject: "Auth Nexus Verification",
     text: `Your OTP is: ${generatedOtp}. This OTP is valid for 1 minute.`,
   };
 
@@ -131,6 +135,11 @@ export const verifyEmailOtpService = async (email, userOtp) => {
     if (Date.now() > user.otpExpiration) {
       throw new Error("OTP has expired");
     }
+    const otpExpirationDuration = 60 * 1000;
+    const otpCreationTime = user.otpExpiration - otpExpirationDuration;
+    if (otpCreationTime > Date.now()) {
+      throw new Error("OTP validity duration exceeded (1 minute)");
+    }
     if (user.otp === userOtp) {
       return "OTP verified successfully";
     } else {
@@ -169,54 +178,48 @@ export const forgotPasswordService = async (email) => {
     if (!user) {
       throw new Error("User not found");
     }
-    const token = await createResetToken(user._id);
-    const result = { token };
-    const expirationTime = new Date();
-    expirationTime.setHours(expirationTime.getHours() + 1);
-    const updatedUser = await User.findOneAndUpdate(
-      { email: email },
-      {
-        $set: {
-          resetPasswordToken: token,
-          resetPasswordExpiration: expirationTime,
-        },
-      },
-      { new: true }
-    );
-    const resetUrl = `https://localhost:3001/reset-password?token=${token}`;
+    const token = await sign(user.id);
+    const activationToken = new ActivationToken({
+      user: user._id,
+      token: token,
+    });
+    await activationToken.save();
+    const resetUrl = `http://localhost:3001/reset-password?token=${token}`;
     const mailInfo = {
       to: email,
-      subject: `Password Update`,
+      subject: `AuthNexus Password Update`,
       text: `Update your password through ${resetUrl}`,
     };
     await sendEmail(mailInfo);
-    return result;
+    return token;
   } catch (error) {
     console.error("Error in forgotPasswordService:", error);
     throw error ? error : "Internal Error";
   }
 };
 
-export const resetPasswordService = async (email, newPassword) => {
+export const resetPasswordService = async (token, password) => {
+  console.log(token, password);
   try {
-    const user = await User.findOne({ email });
+    const activationToken = await ActivationToken.findOne({ token });
+    if (!activationToken) {
+      throw new Error("Invalid token");
+    }
+
+    const user = await User.findById(activationToken.user._id);
     if (!user) {
       throw new Error("User not found");
     }
-    if (!user.resetPasswordToken || !user.resetPasswordExpiration) {
-      throw new Error("Password reset session expired for the user");
-    }
-    if (Date.now() > user.resetPasswordExpiration) {
-      throw new Error("Password reset session has expired");
-    }
-    user.password = newPassword;
-    const results = await user.save();
-    if (!results) {
+    user.password = password;
+    const result = await user.save();
+    if (!result) {
       throw new Error("Failed to update password");
     }
-    return { success: true, message: "Password reset successfully", results };
+    await ActivationToken.deleteOne({ token });
+    return { success: true, message: "Password reset successfully", result };
   } catch (error) {
-    throw new Error(error ? error : "Failed to reset password");
+    console.log(error);
+    throw new Error(error.message || "Failed to reset password");
   }
 };
 

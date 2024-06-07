@@ -14,8 +14,8 @@ export const createProfile = (req, res) => {
     });
 };
 
-export const getUserProfileById = (req, res) => {
-  getUserProfileByIdService(req.body)
+export const getUserProfileById = ({params}, res) => {
+  getUserProfileByIdService(params)
     .then((user) => {
       res.status(200).json({
         message: `Successfully retrieved user data by userId: ${user?.userId} `,

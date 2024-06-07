@@ -104,9 +104,9 @@ export const verifyResetToken = async (req, res) => {
 };
 
 export const resetPassword = async (req, res) => {
-  const { newPassword, email } = req.body;
+  const { token, password } = req.body;
   try {
-    const user = await resetPasswordService(email, newPassword);
+    const user = await resetPasswordService(token, password);
     res.status(200).json({ message: user });
   } catch (error) {
     res

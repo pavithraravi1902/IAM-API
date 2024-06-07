@@ -1,2 +1,44 @@
-1. Create a new user profile: /profiles
-2. 
+ 
+
+ 
+
+
+
+   const handleTogglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
+
+<Grid>
+                  <TextField
+                    id="password"
+                    name="password"
+                    label="Password"
+                    variant="outlined"
+                    onChange={formik.handleChange}
+                    style={{ width: "55%" }}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.password}
+                    required
+                    type={showPassword ? "text" : "password"}
+                    helperText={
+                      formik.touched.password && !formik.values.password
+                        ? "Password mandatory"
+                        : ""
+                    }
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={handleTogglePasswordVisibility}
+                            edge="end"
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                  {formik.errors.password &&
+                    formik.touched.password &&
+                    formik.errors.password}
+                </Grid>

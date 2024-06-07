@@ -5,29 +5,38 @@ export const createProfileService = async (profileData) => {
     const existingUser = await ProfileSchema.findOne({
       profileData: profileData.email,
     });
-    if (existingUser) {
+    const existingUserId = await ProfileSchema.findOne({
+      profileData: profileData.userId,
+    });
+    if (existingUser || existingUserId) {
       throw new Error("User already exist.");
     }
     const user = ProfileSchema.create(profileData);
     return user;
   } catch (err) {
-    throw new Error(err ? err : "Failed to create profile data");
+    console.log(err);
+    if (err.name === "MongoError") {
+      throw new Error("Email or UserId already exists.");
+    } else {
+      throw new Error("Failed to create user profile");
+    }
   }
 };
 
-export const getUserProfileByIdService = async (params) => {
-  console.log(params, "incoming params")
-  const userId = params.userId;
+export const getUserProfileByIdService = async (userId) => {
+  console.log(userId);
   try {
     if (!userId) {
       throw new Error("Invalid params");
     }
-    const user = ProfileSchema.findOne({ userId: userId });
+    const user = ProfileSchema.findOne(userId);
+    console.log(user, "user");
     if (!user) {
       throw new Error("User not found");
     }
     return user;
   } catch (error) {
+    console.log(error);
     throw new Error(error);
   }
 };
@@ -64,8 +73,9 @@ export const getAllUserService = async () => {
   }
 };
 
-export const updateProfileService = async (params, body) => {
+export const updateProfileService = async (params) => {
   const userId = params.userId;
+  console.log(params);
   try {
     const user = await ProfileSchema.findOne({
       userId: userId,
@@ -75,8 +85,9 @@ export const updateProfileService = async (params, body) => {
     }
     const updateUser = await ProfileSchema.findOneAndUpdate(
       { userId: userId },
-      body
+      params
     );
+    console.log(updateUser);
     return updateUser;
   } catch (err) {
     new Error(err ? err : "Profile Updated!");
