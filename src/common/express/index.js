@@ -122,6 +122,26 @@ export default (apiRoot, routes) => {
     })
   );
 
+  app.use(function useExtraction(req, res, next) {
+    const authCode = req.get("Authorization");
+    console.log(authCode);
+    console.log("Time: ", Date.now(), authCode);
+    if (authCode) {
+      verify(authCode)
+        .then((payload) => {
+          req.userId = payload.id;
+          if (req.body && !req.body.userId) {
+            req.body.userId = payload.id;
+          }
+          return null;
+        })
+        .then(next)
+        .catch(next);
+    } else {
+      next();
+    }
+  });
+
   // Global error handler
   app.use((err, req, res, next) => {
     console.error(err);

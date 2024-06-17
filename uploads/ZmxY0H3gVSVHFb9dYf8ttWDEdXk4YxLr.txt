@@ -1,10 +1,4 @@
- 
-
- 
-
-
-
-   const handleTogglePasswordVisibility = () => {
+const handleTogglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
 

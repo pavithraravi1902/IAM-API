@@ -14,6 +14,8 @@ tags:
     description: "Update User Profile"
   - name: "Payment"
     description: "RazorPay integration"
+  - name: "Role Management"
+    description: "Manage Role"
 schemes:
   - "http"
   - "https"
@@ -417,6 +419,228 @@ paths:
           description: "Invalid input"
         "201":
           description: "Successfully refunded"
+  /roles/{authNexusId}:
+    get:
+      tags:
+        - "Role Management"
+      summary: "Retrieve AuthNexus roles"
+      description: "Retrieve AuthNexus roles"
+      operationId: "getAuthNexusRoles"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "authNexusId"
+          in: "path"
+          description: "authNexusId"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "AuthNexus"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+    put:
+      tags:
+        - "Role Management"
+      summary: "Update AuthNexus role"
+      description: ""
+      operationId: "updateAuthNexusRoles"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "authNexusId"
+          in: "path"
+          description: "authNexusId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Update AuthNexus roles"
+          required: true
+          schema:
+            $ref: "#/definitions/AuthNexusRole"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /roles/{authNexusId}/user-role:
+    put:
+      tags:
+        - Role Management
+      summary: "Update User role"
+      description: ""
+      operationId: "updateUserRole"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "authNexusId"
+          in: "path"
+          description: "authNexusId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Update User roles"
+          required: true
+          schema:
+            $ref: "#/definitions/UserRoles"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /roles/{authNexusId}/features:
+    put:
+      tags: 
+        - Role Management
+      summary: "Update authNexus Feature"
+      description: ""
+      operationId: "updateAuthNexusFeature"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "authNexusId"
+          in: "path"
+          description: "authNexusId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Update User roles"
+          required: true
+          schema:
+            $ref: "#/definitions/AuthNexusFeatures"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /roles/role-by-user-id/{userId}:
+    get:
+      tags: 
+        - Role Management
+      summary: Retrieve role by user Id
+      description: ""
+      operationId: "getRolesByUserId"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userId"
+          in: "path"
+          description: "userId"
+          required: true
+          type: "string"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /roles/user-by-role-id/{roleId}:
+    get:
+      tags: 
+        - Role Management
+      summary: Retrieve user by role Id
+      description: ""
+      operationId: "getUserByRoleId"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "roleId"
+          in: "path"
+          description: "roleId"
+          required: true
+          type: "string"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /roles/{authNexusId}/features:
+    get:
+      tags: 
+        - Role Management
+      summary: Retrieve AuthNexus roles
+      description: ""
+      operationId: "getAuthNexusFeature"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "authNexusId"
+          in: "path"
+          description: "authNexusId"
+          required: true
+          type: "string"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /roles/{_id}:
+    delete: 
+      tags: 
+        - Role Management
+      summary: Delete AuthNexus Role
+      description: ""
+      operationId: "deleteAuthNexusRole"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "_id"
+          in: "path"
+          description: "_id"
+          required: true
+          type: "string"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /roles/{roleId}/{userId}/:
+    delete: 
+      tags: 
+        - Role Management
+      summary: Delete User Role
+      description: ""
+      operationId: "deleteUserRole"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userId"
+          in: "path"
+          description: "userId"
+          required: true
+          type: "string"
+        - name: "roleId"
+          in: "path"
+          description: "roleId"
+          required: true
+          type: "string"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
 securityDefinitions:
   api_key:
     type: "apiKey"
@@ -551,3 +775,56 @@ definitions:
         type: "number"
     xml:
       name: "PartialRefund"
+  AuthRoles:
+    type: object
+    properties:
+      authNexusId:
+        type: string
+      roleName:
+        type: string
+      roles:  
+        type: array  
+        items:        
+          $ref: '#/definitions/Roles'
+  Roles: 
+    type: object
+    properties:
+      featureCode:
+        type: string
+      all:
+        type: boolean
+      read:
+        type: boolean
+      write:
+        type: boolean
+      delete:
+        type: boolean
+      publish:
+        type: boolean 
+  UserRoles:
+    type: object
+    properties:
+      authNexusId:
+        type: string
+      roleId:
+        type: string
+      users:  
+        type: array  
+        items:        
+          $ref: '#/definitions/UserRole'
+  UserRole: 
+    type: object
+    properties:
+      userId:
+        type: string
+  AuthNexusFeatures:
+    type: object
+    properties:
+      authNexusId:
+        type: string
+      featureName:
+        type: string
+      featureCode:
+        type: string
+      publish:
+        type: boolean
