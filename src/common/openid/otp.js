@@ -2,7 +2,6 @@ import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
 import { jwtSecretKey } from "./jwt.js";
 
-
 export const verifyOTP = (userInputOTP, generatedOtp) => {
   return userInputOTP === generatedOtp;
 };
@@ -13,23 +12,21 @@ export const generateOtp = () => {
 };
 
 export const sendEmail = async (mailInfo) => {
-  const {to, subject, text} = mailInfo;
+  const { to, subject, text } = mailInfo;
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
       user: "pavithraravi1902@gmail.com",
-      pass: "woqx qffd eyvp jkgh"
-    //  https://myaccount.google.com/apppasswords
+      pass: "woqx qffd eyvp jkgh",
+      //  https://myaccount.google.com/apppasswords
     },
   });
-
   const mailOptions = {
-    from: 'pavithraravi1902@gmail.com', 
+    from: "pavithraravi1902@gmail.com",
     to: to,
     subject: subject,
     text: text,
   };
-
   try {
     const info = await transporter.sendMail(mailOptions);
     return true;
@@ -39,8 +36,7 @@ export const sendEmail = async (mailInfo) => {
   }
 };
 
-export const generateResetToken = (payload)=>{
+export const generateResetToken = (payload) => {
   const token = jwt.sign(payload, jwtSecretKey, { expiresIn: "1h" });
   return token;
-}
-
+};

@@ -62,6 +62,57 @@ paths:
               $ref: "#/definitions/Users"
         "400":
           description: "Invalid request"
+  /users/user-search/filter:
+    get:
+      tags:
+        - "Users"
+      summary: "Search User"
+      description: "Retrieve the User"
+      operationId: "search user"
+      produces:
+        - "application/json"
+      parameters:
+        - in: query
+          name: offset
+          schema:
+            type: "integer"
+          description: The number of items to skip before starting to collect the result set
+        - in: query
+          name: limit
+          schema:
+            type: "integer"
+          description: The numbers of items to return
+        - in: query
+          name: username
+          schema:
+            type: "string"
+          description: It is used to filter required columns for table in UI
+        - in: query
+          name: email
+          schema:
+            type: "string"
+          description: Used to filter out by status
+        - in: query
+          name: isActive
+          schema:
+            type: "string"
+          description: Field name to sort
+        - in: query
+          name: limit
+          schema:
+            type: "string"
+          description: Sorting order ex:- asc or desc
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Application"
+        "400":
+          description: "Internal server error"
+          schema:
+            type: "string"
   /users/login:
     post:
       tags:
@@ -327,6 +378,67 @@ paths:
           description: "Invalid userId supplied"
         "404":
           description: "User not found"
+  /profile/profile-search/filter:
+    get:
+      tags:
+        - "Profile"
+      summary: "Search User Profile"
+      description: "Retrieve the User Profile"
+      operationId: "search user profile"
+      produces:
+        - "application/json"
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: "integer"
+          description: The numbers of items to return
+        - in: query
+          name: firstName
+          schema:
+            type: "string"
+          description: Used to filter out by firstName
+        - in: query
+          name: lastName
+          schema:
+            type: "string"
+          description: Used to filter out by lastName
+        - in: query
+          name: email
+          schema:
+            type: "string"
+          description: Used to filter out by email
+        - in: query
+          name: dob
+          schema:
+            type: "string"
+          description: Used to filter out by dob
+        - in: query
+          name: mobileNumber
+          schema:
+            type: "string"
+          description: Used to filter out by mobileNumber
+        - in: query
+          name: isActive
+          schema:
+            type: "string"
+          description: Field name to sort
+        - in: query
+          name: limit
+          schema:
+            type: "string"
+          description: Sorting order ex:- asc or desc
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Application"
+        "400":
+          description: "Internal server error"
+          schema:
+            type: "string"
   /payment/order:
     post:
       tags:

@@ -5,6 +5,7 @@ import {
   getUsers,
   login,
   resetPassword,
+  searchUsers,
   sendOtpByEmail,
   verifyEmailOtp,
   verifyResetToken,
@@ -31,6 +32,8 @@ router.post("/verify-otp", verifyEmailOtp);
 router.post("/forgot-password",  forgotPassword);
 
 router.get("/:token", verifyResetToken);
+
+router.get("/user-search/filter", searchUsers);
 
 router.post("/reset-password", resetPassword);
 

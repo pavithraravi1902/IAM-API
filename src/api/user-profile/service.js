@@ -1,3 +1,4 @@
+import { User } from "../auth/model.js";
 import { ProfileSchema } from "./model.js";
 
 export const createProfileService = async (profileData) => {
@@ -91,5 +92,58 @@ export const updateProfileService = async (params) => {
     return updateUser;
   } catch (err) {
     new Error(err ? err : "Profile Updated!");
+  }
+};
+
+export const searchUserProfileService = async (queryParams) => {
+  try {
+    const {
+      firstName,
+      lastName,
+      dob,
+      mobileNumber,
+      email,
+      isActive,
+      page = 1,
+      limit = 10,
+    } = queryParams;
+
+    const filter = {};
+
+    if (firstName) {
+      filter.firstName = new RegExp(firstName, "i");
+    }
+
+    if (lastName) {
+      filter.lastName = new RegExp(lastName, "i");
+    }
+
+    if (email) {
+      filter.email = new RegExp(email, "i");
+    }
+
+    if (dob) {
+      filter.dob = new RegExp(dob, "i");
+    }
+
+    if (mobileNumber) {
+      filter.mobileNumber = new RegExp(mobileNumber, "i");
+    }
+
+    if (isActive !== undefined) {
+      filter.isActive = isActive === "true";
+    }
+
+    const options = {
+      page: parseInt(page, 10),
+      limit: parseInt(limit, 10),
+    };
+
+    const users = await ProfileSchema.paginate(filter, options);
+
+    return users;
+  } catch (error) {
+    console.log(error);
+    throw { message: error.message || "Error retrieving users", status: 500 };
   }
 };

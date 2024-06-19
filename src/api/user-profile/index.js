@@ -4,6 +4,7 @@ import {
   deleteUserById,
   getAllUser,
   getUserProfileById,
+  searchUserProfile,
   updateProfile,
 } from "./controller.js";
 import authorizeModule from "../../common/openid/access.js";
@@ -21,5 +22,7 @@ router.put("/:userId", updateProfile);
 router.delete("/:userId", deleteUserById);
 
 router.get("/", getAllUser);
+
+router.get("/profile-search/filter", searchUserProfile);
 
 export default router;

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import mongoosePaginate from "mongoose-paginate-v2";
 const { Schema } = mongoose;
 
 const profileSchema = new Schema({
@@ -15,4 +16,5 @@ const profileSchema = new Schema({
   isActive: Boolean
 });
 
+profileSchema.plugin(mongoosePaginate);
 export const ProfileSchema = mongoose.model("ProfileSchema", profileSchema);

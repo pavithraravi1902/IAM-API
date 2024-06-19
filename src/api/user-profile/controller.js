@@ -1,4 +1,4 @@
-import { createProfileService, deleteUserByIdService, getAllUserService, getUserProfileByIdService, updateProfileService } from "./service.js";
+import { createProfileService, deleteUserByIdService, getAllUserService, getUserProfileByIdService, searchUserProfileService, updateProfileService } from "./service.js";
 
 export const createProfile = (req, res) => {
   createProfileService(req.body)
@@ -72,3 +72,16 @@ export const updateProfile = (req, res) => {
         .json({ message: error.message || "Internal server error" });
     });
 };
+
+export const searchUserProfile = async (req, res) => {
+  try {
+    const users = await searchUserProfileService(req.query);
+    res.status(200).json({ message: "Users retrieved successfully", users });
+  } catch (error) {
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || "Internal server error" });
+  }
+};
+
+
