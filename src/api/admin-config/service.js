@@ -46,7 +46,11 @@ export const deleteEmailTemplateService = async ({ name }) => {
   }
 };
 
-export const sendUserNotificationService = async ({ email, subject, content }) => {
+export const sendUserNotificationService = async ({
+  email,
+  subject,
+  content,
+}) => {
   try {
     const mailInfo = {
       to: email,
@@ -56,7 +60,7 @@ export const sendUserNotificationService = async ({ email, subject, content }) =
     await sendEmail(mailInfo);
     return { message: "Mail sent successfully" };
   } catch (error) {
-    console.error("Error sending email:", error); 
+    console.error("Error sending email:", error);
     throw new Error(error.message || "Failed to send email");
   }
 };

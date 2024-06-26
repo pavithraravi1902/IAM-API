@@ -1,8 +1,8 @@
-import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
-import s3Client from "../../common/aws/index.js";
-import { FileUpload, LocalFileUpload } from "./model.js";
+import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import fs from "fs";
 import path from "path";
+import s3Client from "../../common/aws/index.js";
+import { FileUpload, LocalFileUpload } from "./model.js";
 const __dirname = path.resolve();
 
 export const doUploadService = async (req, res) => {
@@ -43,7 +43,6 @@ export const doDownloadService = async (req, res) => {
     res.status(500).json({ error: "Error retrieving file from S3" });
   }
 };
-
 
 export const doLocalUploadService = async (req, res) => {
   if (!req.file) {

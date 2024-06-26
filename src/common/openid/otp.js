@@ -1,5 +1,5 @@
-import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
 import { jwtSecretKey } from "./jwt.js";
 
 export const verifyOTP = (userInputOTP, generatedOtp) => {

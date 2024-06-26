@@ -1,6 +1,5 @@
-import merge from "lodash/merge.js";
-import path from "path";
 import dotenv from "dotenv-safe";
+import path from "path";
 
 const __filename = new URL(import.meta.url).pathname;
 const __dirname = path.dirname(__filename);
@@ -39,4 +38,4 @@ export const config = {
   },
 };
 
-export const SWAGGER_API_HOST = "http://localhost:3000"
+export const SWAGGER_API_HOST = "http://localhost:3000";

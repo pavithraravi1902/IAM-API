@@ -7,7 +7,6 @@ import {
   searchUserProfile,
   updateProfile,
 } from "./controller.js";
-import authorizeModule from "../../common/openid/access.js";
 
 const router = express.Router();
 

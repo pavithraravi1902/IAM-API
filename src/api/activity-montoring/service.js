@@ -10,10 +10,10 @@ export const createLog = async (user, method, url) => {
 };
 
 export const getLogs = async (filter = {}, options = {}) => {
-    try {
-      const logs = await Log.find(filter, null, options).exec();
-      return logs;
-    } catch (error) {
-      throw error;
-    }
-  };
+  try {
+    const logs = await Log.find(filter, null, options).exec();
+    return logs;
+  } catch (error) {
+    throw error;
+  }
+};

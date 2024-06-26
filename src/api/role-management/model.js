@@ -2,111 +2,108 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const RolesClassModel = new Schema(
-    {
-      featureCode: {
-        type: String,
-        required: true,
-      },
-      all: {
-        type: Boolean,
-        required: true,
-      },
-      read: {
-        type: Boolean,
-        required: true,
-      },
-      write: {
-        type: Boolean,
-        required: true,
-      },
-      delete: {
-        type: Boolean,
-        required: true,
-      }
+  {
+    featureCode: {
+      type: String,
+      required: true,
     },
-    {
-      _id: false,
-    }
-  );
-
-  const RolesModel = new Schema(
-    {
-      authNexusId: {
-        type: Schema.Types.ObjectId,
-        required: true,
-      },
-      roleName: {
-        type: String,
-        required: true,
-        unique: true,
-      },
-      roles: [RolesClassModel],
+    all: {
+      type: Boolean,
+      required: true,
     },
-    {
-      strict: true,
-      timestamps: true,
-    }
-  );
-  
-  export const AuthRoles = mongoose.model("AuthRoles", RolesModel);
-
-  const UserModel = new Schema(
-    {
-      userId: {
-        type: String,
-        required: true,
-      },
+    read: {
+      type: Boolean,
+      required: true,
     },
-    {
-      strict: true,
-      timestamps: true,
-    }
-  );
-
-  const UserRoleModel = new Schema(
-    {
-      authNexusId: {
-        type: Schema.Types.ObjectId,
-        required: true,
-      },
-      roleId: {
-        type: String,
-        required: true,
-      },
-      users: [UserModel],
-    }
-  );
-  
-  export const UserRoles = mongoose.model("UserRoles", UserRoleModel);
-
-  const AuthNexusFeatureRole = new Schema(
-    {
-      authNexusId: {
-        type: Schema.Types.ObjectId,
-        required: true,
-      },
-      featureName: {
-        type: String,
-        required: true,
-      },
-      featureCode: {
-        type: String,
-        required: true,
-        unique: true,
-      },
-      publish: {
-        type: Boolean,
-        default: true,
-      },
+    write: {
+      type: Boolean,
+      required: true,
     },
-    {
-      strict: true,
-      timestamps: true,
-    }
-  );
-  
-  export const AuthNexusFeatures = mongoose.model(
-    "AuthNexusFeatures",
-    AuthNexusFeatureRole
-  );
-  
+    delete: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  {
+    _id: false,
+  }
+);
+
+const RolesModel = new Schema(
+  {
+    authNexusId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+    },
+    roleName: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    roles: [RolesClassModel],
+  },
+  {
+    strict: true,
+    timestamps: true,
+  }
+);
+
+export const AuthRoles = mongoose.model("AuthRoles", RolesModel);
+
+const UserModel = new Schema(
+  {
+    userId: {
+      type: String,
+      required: true,
+    },
+  },
+  {
+    strict: true,
+    timestamps: true,
+  }
+);
+
+const UserRoleModel = new Schema({
+  authNexusId: {
+    type: Schema.Types.ObjectId,
+    required: true,
+  },
+  roleId: {
+    type: String,
+    required: true,
+  },
+  users: [UserModel],
+});
+
+export const UserRoles = mongoose.model("UserRoles", UserRoleModel);
+
+const AuthNexusFeatureRole = new Schema(
+  {
+    authNexusId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+    },
+    featureName: {
+      type: String,
+      required: true,
+    },
+    featureCode: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    publish: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  {
+    strict: true,
+    timestamps: true,
+  }
+);
+
+export const AuthNexusFeatures = mongoose.model(
+  "AuthNexusFeatures",
+  AuthNexusFeatureRole
+);

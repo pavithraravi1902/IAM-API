@@ -7,13 +7,13 @@ const profileSchema = new Schema({
     type: Object,
     required: false,
   },
-  userId: { type: String, required: true, unique: true},
+  userId: { type: String, required: true, unique: true },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   dob: String,
   mobileNumber: String,
-  email: { type: String, required: true, unique: true},
-  isActive: Boolean
+  email: { type: String, required: true, unique: true },
+  isActive: Boolean,
 });
 
 profileSchema.plugin(mongoosePaginate);

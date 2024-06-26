@@ -1,4 +1,9 @@
-import { doDownloadService, doLocalDownloadService, doLocalUploadService, doUploadService } from "./service.js";
+import {
+  doDownloadService,
+  doLocalDownloadService,
+  doLocalUploadService,
+  doUploadService,
+} from "./service.js";
 
 export const uploadFile = (req, res) => {
   doUploadService(req, res);

@@ -19,7 +19,7 @@ function authorizeModule(moduleName) {
       next();
     } else {
       res.status(403).json({ error: "Forbidden" });
-      res.redirect('/');
+      res.redirect("/");
     }
   };
 }

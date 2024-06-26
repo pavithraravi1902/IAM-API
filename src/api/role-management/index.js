@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { body } from "express-validator";
 import {
   deleteAuthNexusRole,
   deleteUserRole,
@@ -10,7 +11,6 @@ import {
   updateAuthNexusRoles,
   updateUserRole,
 } from "./controller.js";
-import { body } from "express-validator";
 const router = new Router();
 
 /**

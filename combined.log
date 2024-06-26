@@ -137,3 +137,17 @@
 {"level":"info","message":"guest PUT /roles/604dfb61be00390018cee555/features at 2024-06-26T04:25:04.690Z"}
 {"level":"info","message":"guest PUT /roles/604dfb61be00390018cee555/features at 2024-06-26T04:28:46.078Z"}
 {"level":"info","message":"guest PUT /roles/604dfb61be00390018cee555/features at 2024-06-26T04:29:28.366Z"}
+{"level":"info","message":"guest PUT /roles/604dfb61be00390018cee555/features at 2024-06-26T04:41:16.200Z"}
+{"level":"info","message":"guest PUT /roles/604dfb61be00390018cee555/features at 2024-06-26T04:42:00.835Z"}
+{"level":"info","message":"guest PUT /roles/604dfb61be00390018cee555/user-role at 2024-06-26T04:42:25.488Z"}
+{"level":"info","message":"guest PUT /roles/604dfb61be00390018cee555/user-role at 2024-06-26T04:43:15.738Z"}
+{"level":"info","message":"guest GET /roles/role-by-user-id/667a9ab3e5f67d9cf80f5a96 at 2024-06-26T04:43:36.920Z"}
+{"level":"info","message":"guest PUT /roles/604dfb61be00390018cee555/user-role at 2024-06-26T04:54:23.955Z"}
+{"level":"info","message":"guest PUT /roles/604dfb61be00390018cee555/user-role at 2024-06-26T04:59:10.162Z"}
+{"level":"info","message":"guest PUT /roles/604dfb61be00390018cee555/user-role at 2024-06-26T05:01:01.053Z"}
+{"level":"info","message":"guest PUT /roles/604dfb61be00390018cee555/user-role at 2024-06-26T05:01:58.277Z"}
+{"level":"info","message":"guest PUT /roles/604dfb61be00390018cee555/user-role at 2024-06-26T05:02:34.272Z"}
+{"level":"info","message":"guest PUT /roles/604dfb61be00390018cee555/user-role at 2024-06-26T05:06:27.694Z"}
+{"level":"info","message":"guest GET /roles/role-by-user-id/667a9ab3e5f67d9cf80f5a96 at 2024-06-26T05:12:10.137Z"}
+{"level":"info","message":"guest GET /roles/user-by-role-id/667ace7ced1dd58802af6ef6 at 2024-06-26T05:12:17.448Z"}
+{"level":"info","message":"guest GET /roles/user-by-role-id/667acf230c3ea026e25b5c9e at 2024-06-26T05:13:15.511Z"}

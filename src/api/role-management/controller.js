@@ -12,9 +12,9 @@ import {
 } from "./service.js";
 
 export const getAuthNexusRoles = async ({ params }, res) => {
-  console.log(params, "params")
+  console.log(params, "params");
   try {
-    const {authNexusId} = params
+    const { authNexusId } = params;
     const user = await getAuthNexusRolesService(authNexusId);
     res.status(200).json({ message: user });
   } catch (error) {
@@ -65,7 +65,7 @@ export const updateAuthNexusFeature = async ({ params, body }, res) => {
 };
 
 export const updateUserRole = async ({ params, body }, res) => {
-  console.log("controller console")
+  console.log("controller console");
   try {
     const role = await updateUserRoleService(params, {
       authNexusId: params.authNexusId,

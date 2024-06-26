@@ -32,8 +32,9 @@ const LocalUploadSchema = new Schema({
   },
 });
 
-export const LocalFileUpload = mongoose.model("LocalFileUpload", LocalUploadSchema);
+export const LocalFileUpload = mongoose.model(
+  "LocalFileUpload",
+  LocalUploadSchema
+);
 
 export const localschema = LocalFileUpload.schema;
-
-

@@ -1,4 +1,11 @@
-import { createProfileService, deleteUserByIdService, getAllUserService, getUserProfileByIdService, searchUserProfileService, updateProfileService } from "./service.js";
+import {
+  createProfileService,
+  deleteUserByIdService,
+  getAllUserService,
+  getUserProfileByIdService,
+  searchUserProfileService,
+  updateProfileService,
+} from "./service.js";
 
 export const createProfile = (req, res) => {
   createProfileService(req.body)
@@ -14,7 +21,7 @@ export const createProfile = (req, res) => {
     });
 };
 
-export const getUserProfileById = ({params}, res) => {
+export const getUserProfileById = ({ params }, res) => {
   getUserProfileByIdService(params)
     .then((user) => {
       res.status(200).json({
@@ -83,5 +90,3 @@ export const searchUserProfile = async (req, res) => {
       .json({ message: error.message || "Internal server error" });
   }
 };
-
-

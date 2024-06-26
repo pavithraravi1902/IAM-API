@@ -1,6 +1,5 @@
 import Promise from "bluebird";
 import jwt from "jsonwebtoken";
-import crypto from "crypto";
 
 export const jwtSecretKey = process.env.JWT_SECRET_KEY || "jwtsecret";
 
@@ -29,11 +28,11 @@ export const verify = async (token) => {
 
 export const createResetToken = async (userId) => {
   try {
-    const expiration = Math.floor(Date.now() / 1000) + (60 * 60); 
+    const expiration = Math.floor(Date.now() / 1000) + 60 * 60;
     const payload = {
-      userId: userId,     
-      iat: Math.floor(Date.now() / 1000), 
-      exp: expiration  
+      userId: userId,
+      iat: Math.floor(Date.now() / 1000),
+      exp: expiration,
     };
     const token = jwt.sign(payload, jwtSecretKey);
     return token;

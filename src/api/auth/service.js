@@ -1,7 +1,7 @@
-import { createResetToken, sign, verify } from "../../common/openid/jwt.js";
+import { sign, verify } from "../../common/openid/jwt.js";
 import { generateOtp, sendEmail } from "../../common/openid/otp.js";
-import localPassport from "../../common/passport/local.js";
 import googlePassport from "../../common/passport/google.js";
+import localPassport from "../../common/passport/local.js";
 import { ActivationToken, User } from "./model.js";
 
 export const createUserService = async (userData) => {
@@ -271,7 +271,7 @@ export const searchUsersService = async (queryParams) => {
       filter.isActive = isActive === "true";
     }
 
-    console.log("Filter object:", filter); 
+    console.log("Filter object:", filter);
 
     const options = {
       page: parseInt(page, 10),
@@ -286,4 +286,3 @@ export const searchUsersService = async (queryParams) => {
     throw { message: error.message || "Error retrieving users", status: 500 };
   }
 };
-

@@ -1,10 +1,10 @@
 import {
+  addEmailTemplateService,
   deleteEmailTemplateService,
   getAllEmailTemplateService,
   getEmailTemplateService,
-  updateEmailTemplateService,
-  addEmailTemplateService,
   sendUserNotificationService,
+  updateEmailTemplateService,
 } from "./service.js";
 
 export const addEmailTemplate = async ({ body }, res) => {

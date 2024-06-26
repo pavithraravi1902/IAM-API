@@ -1,4 +1,3 @@
-import { User } from "../auth/model.js";
 import { ProfileSchema } from "./model.js";
 
 export const createProfileService = async (profileData) => {

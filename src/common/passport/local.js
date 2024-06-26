@@ -1,8 +1,8 @@
+import bcrypt from "bcrypt";
+import { Types } from "mongoose";
 import passport from "passport";
 import LocalStrategy from "passport-local";
-import bcrypt from "bcrypt";
 import { User } from "../../api/auth/model.js";
-import { Types } from 'mongoose';
 const { ObjectId } = Types;
 
 passport.use(

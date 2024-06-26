@@ -1,4 +1,5 @@
 import express from "express";
+import passport from "passport";
 import {
   createUser,
   forgotPassword,
@@ -10,8 +11,6 @@ import {
   verifyEmailOtp,
   verifyResetToken,
 } from "./controller.js";
-import passport from "passport";
-import authorizeModule from "../../common/openid/access.js";
 
 const router = express.Router();
 

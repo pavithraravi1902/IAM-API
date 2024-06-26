@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import bodyParser from "body-parser";
 import { errorHandler as bodyErrorHandler } from "bodymen";
 import compression from "compression";
 import cors from "cors";
@@ -9,10 +10,9 @@ import passport from "passport";
 import LocalStrategy from "passport-local";
 import path from "path";
 import { errorHandler as queryErrorHandler } from "querymen";
-import { User } from "../../api/auth/model.js";
-import bodyParser from "body-parser";
-import logger from "../winston/logger.js";
 import { logRequest } from "../../api/activity-montoring/controller.js";
+import { User } from "../../api/auth/model.js";
+import logger from "../winston/logger.js";
 
 export default (apiRoot, routes) => {
   const app = express();
@@ -32,11 +32,11 @@ export default (apiRoot, routes) => {
   //winston
   const activityLogger = (req, res, next) => {
     const { method, url } = req;
-    const user = req.user ? req.user.username : 'guest';
+    const user = req.user ? req.user.username : "guest";
     const message = `${user} ${method} ${url} at ${new Date().toISOString()}`;
-  
+
     logger.info(message);
-  
+
     next();
   };
 
@@ -63,8 +63,8 @@ export default (apiRoot, routes) => {
   const dbLogger = (req, res, next) => {
     logRequest(req, res, next);
   };
-app.use(dbLogger);
-  
+  app.use(dbLogger);
+
   // Logging and compression
   app.use(morgan("dev"));
   app.use(compression());
@@ -72,7 +72,7 @@ app.use(dbLogger);
   // Body parsing
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  app.use(bodyParser.urlencoded({ limit: '100mb', extended: true }));
+  app.use(bodyParser.urlencoded({ limit: "100mb", extended: true }));
 
   // CORS
   app.use(cors(corsOptions));
@@ -95,7 +95,7 @@ app.use(dbLogger);
             return done(null, false, { message: "Incorrect password" });
           }
 
-          return done(null, user); 
+          return done(null, user);
         } catch (error) {
           return done(error);
         }
@@ -171,4 +171,3 @@ app.use(dbLogger);
 
   return app;
 };
-

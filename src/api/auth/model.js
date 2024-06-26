@@ -20,7 +20,7 @@ const userSchema = new Schema({
   otp: String,
   otpExpiration: Date,
   role: { type: String, enum: ["user", "admin"], default: "user" },
-  isActive: Boolean
+  isActive: Boolean,
 });
 
 userSchema.methods.hasPermissionForModule = function (moduleName) {

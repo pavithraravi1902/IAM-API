@@ -2,8 +2,8 @@ import http from "http";
 import api from "./api/index.js";
 import express from "./common/express/index.js";
 import mongoose from "./common/mongoose/index.js";
-import {config} from "./config.js"
-const {apiRoot, mongo, port, ip, env} = config;
+import { config } from "./config.js";
+const { apiRoot, mongo, port, ip, env } = config;
 
 const app = express(apiRoot, api);
 const server = http.createServer(app);
