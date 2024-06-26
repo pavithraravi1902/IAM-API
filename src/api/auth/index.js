@@ -17,19 +17,17 @@ const router = express.Router();
 
 router.post("/", createUser);
 
-router.post(
-  "/login",
-  passport.authenticate('local'),
-  login
-);
+router.post("/login", passport.authenticate("local"), login);
 
-router.get("/", authorizeModule('user'), getUsers);
+//router.get("/", authorizeModule("user"), getUsers);
+
+router.get("/", getUsers);
 
 router.post("/send-otp", sendOtpByEmail);
 
 router.post("/verify-otp", verifyEmailOtp);
 
-router.post("/forgot-password",  forgotPassword);
+router.post("/forgot-password", forgotPassword);
 
 router.get("/:token", verifyResetToken);
 

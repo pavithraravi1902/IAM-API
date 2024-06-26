@@ -11,6 +11,8 @@ import path from "path";
 import { errorHandler as queryErrorHandler } from "querymen";
 import { User } from "../../api/auth/model.js";
 import bodyParser from "body-parser";
+import logger from "../winston/logger.js";
+import { logRequest } from "../../api/activity-montoring/controller.js";
 
 export default (apiRoot, routes) => {
   const app = express();
@@ -27,6 +29,17 @@ export default (apiRoot, routes) => {
     optionSuccessStatus: 200,
   };
 
+  //winston
+  const activityLogger = (req, res, next) => {
+    const { method, url } = req;
+    const user = req.user ? req.user.username : 'guest';
+    const message = `${user} ${method} ${url} at ${new Date().toISOString()}`;
+  
+    logger.info(message);
+  
+    next();
+  };
+
   // Session middleware
   app.use(
     session({
@@ -40,10 +53,18 @@ export default (apiRoot, routes) => {
   app.use(passport.initialize());
   app.use(passport.session());
 
+  //winston
+  app.use(activityLogger);
+
   // Static files and view engine setup
   app.use(express.static(path.join(__dirname, "public")));
   app.set("view engine", "ejs");
 
+  const dbLogger = (req, res, next) => {
+    logRequest(req, res, next);
+  };
+app.use(dbLogger);
+  
   // Logging and compression
   app.use(morgan("dev"));
   app.use(compression());
@@ -150,3 +171,4 @@ export default (apiRoot, routes) => {
 
   return app;
 };
+

@@ -65,6 +65,7 @@ export const updateAuthNexusFeature = async ({ params, body }, res) => {
 };
 
 export const updateUserRole = async ({ params, body }, res) => {
+  console.log("controller console")
   try {
     const role = await updateUserRoleService(params, {
       authNexusId: params.authNexusId,

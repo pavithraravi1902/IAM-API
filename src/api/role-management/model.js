@@ -32,7 +32,7 @@ const RolesClassModel = new Schema(
   const RolesModel = new Schema(
     {
       authNexusId: {
-        type: String,
+        type: Schema.Types.ObjectId,
         required: true,
       },
       roleName: {
@@ -66,7 +66,7 @@ const RolesClassModel = new Schema(
   const UserRoleModel = new Schema(
     {
       authNexusId: {
-        type: String,
+        type: Schema.Types.ObjectId,
         required: true,
       },
       roleId: {
@@ -82,7 +82,7 @@ const RolesClassModel = new Schema(
   const AuthNexusFeatureRole = new Schema(
     {
       authNexusId: {
-        type: String,
+        type: Schema.Types.ObjectId,
         required: true,
       },
       featureName: {
@@ -105,8 +105,8 @@ const RolesClassModel = new Schema(
     }
   );
   
-  export const AuthNexusFeature = mongoose.model(
-    "AuthNexusFeature",
+  export const AuthNexusFeatures = mongoose.model(
+    "AuthNexusFeatures",
     AuthNexusFeatureRole
   );
   

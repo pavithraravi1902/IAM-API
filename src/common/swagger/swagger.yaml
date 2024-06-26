@@ -16,6 +16,8 @@ tags:
     description: "RazorPay integration"
   - name: "Role Management"
     description: "Manage Role"
+  - name: "Admin Configs"
+    description: "Manage admin configurations"
 schemes:
   - "http"
   - "https"
@@ -91,7 +93,7 @@ paths:
           name: email
           schema:
             type: "string"
-          description: Used to filter out by status
+          description: Used to filter out by email
         - in: query
           name: isActive
           schema:
@@ -434,7 +436,7 @@ paths:
           schema:
             type: "array"
             items:
-              $ref: "#/definitions/Application"
+              $ref: "#/definitions/User"
         "400":
           description: "Internal server error"
           schema:
@@ -576,7 +578,7 @@ paths:
           description: "Update AuthNexus roles"
           required: true
           schema:
-            $ref: "#/definitions/AuthNexusRole"
+            $ref: "#/definitions/AuthRoles"
       responses:
         "400":
           description: "Invalid input"
@@ -753,6 +755,162 @@ paths:
           description: "Invalid input"
         "200":
           description: "successfull Operation"
+  /admin-configs/email-templates:
+    post:
+      tags:
+        - Admin Configs
+      summary: Add Email Template Config
+      description: "Add email template config"
+      operationId: "addEmailTemplateConfig"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Create Email Template Configs"
+          required: true
+          schema:
+            $ref: "#/definitions/EmailTemplateConfig"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    get:
+      tags:
+        - Admin Configs
+      summary: Retrieve Email Template Config
+      description: "Retrieve email template config"
+      operationId: "getEmailTemplate"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /admin-configs/email-templates/{name}:
+    put:
+      tags: 
+        - Admin Configs
+      summary: Update Email Template
+      description: "Update email template config"
+      operationId: "updateEmailTemplateConfig"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "name"
+          description: "Update Email Template Configs"
+          required: true
+        - in: "body"
+          name: "body"
+          description: "Update Email Template Configs"
+          required: true
+          schema:
+            $ref: "#/definitions/EmailTemplateConfig"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    delete:
+      tags: 
+        - Admin Configs
+      summary: Delete Email Template
+      description: "Delete email template config"
+      operationId: " deleteEmailTemplateConfig"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "name"
+          description: "Delete Email Template Configs"
+          required: true
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"  
+  /admin-configs/email-templates:
+    get:
+      tags:
+        - Admin Configs
+      summary: "Fetch email template"
+      description: "Retreive email template"
+      operationId: "getEmailTemplateConfig"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              schema:
+                $ref: "#/definitions/EmailTemplateConfig"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /admin-configs/email-templates/{name}:
+    get:
+      tags:
+        - Admin Configs
+      summary: "Fetch email template by name"
+      description: "Retreive email template by name"
+      operationId: "getEmailTemplateConfigByName"
+      produces:
+        - "application/json"
+      parameters:
+        - in: path
+        - name: name
+          description: "retrieve email template by name"
+          required: true
+          type: "string" 
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              schema:
+                $ref: "#/definitions/EmailTemplateConfig"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /admin-configs/send-mail:
+    post:
+      tags:
+        - Admin Configs
+      summary: User Notification (Notify through email)
+      description: "notify user through mail"
+      operationId: "sendEmailUserNotification"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Create Email Template Configs"
+          required: true
+          schema:
+            $ref: "#/definitions/SendEmailTemplateConfig"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
 securityDefinitions:
   api_key:
     type: "apiKey"
@@ -829,16 +987,18 @@ definitions:
     properties:
       userId: 
         type: "string"
-      firstname: 
+      firstName: 
         type: "string"
-      lastname:
+      lastName:
         type: "string"
-      DOB:
+      dob:
         type: "string"
       mobileNumber: 
         type: "string"
       email:
         type: "string"
+      isActive:
+        type: "boolean"
     xml:
       name: "Profile"
   OrderPayment:
@@ -929,7 +1089,7 @@ definitions:
     properties:
       userId:
         type: string
-  AuthNexusFeatures:
+  AuthNexusFeature:
     type: object
     properties:
       authNexusId:
@@ -940,3 +1100,19 @@ definitions:
         type: string
       publish:
         type: boolean
+  EmailTemplateConfig: 
+    type: object
+    properties:
+      name:
+        type: string
+      content:
+        type: string
+  SendEmailTemplateConfig:
+    type: object
+    properties:
+      email:
+        type: string
+      subject:
+        type: string
+      content:
+        type: string

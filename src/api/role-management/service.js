@@ -1,4 +1,4 @@
-import { AuthNexusFeature, AuthRoles, UserRoles } from "./model.js";
+import { AuthNexusFeatures, AuthRoles, UserRoles } from "./model.js";
 import { User } from "../auth/model.js";
 
 export const getAuthNexusRolesService = async ({ authNexusId }) => {
@@ -29,6 +29,7 @@ export const getAuthNexusRolesService = async ({ authNexusId }) => {
 };
 
 export const updateAuthNexusRolesService = async ({ authNexusId }, body) => {
+  console.log("incoming console")
   const obj = body.id
     ? { authNexusId: authNexusId, _id: body.id }
     : { authNexusId: authNexusId, roleName: body.roleName };
@@ -37,6 +38,7 @@ export const updateAuthNexusRolesService = async ({ authNexusId }, body) => {
       upsert: true,
       new: true,
     });
+    console.log(result, "result");
     if (result) {
       return { message: "Roles updated successfully!" };
     }
@@ -75,7 +77,7 @@ export const getAuthNexusFeatureService = async ({ authNexusId }) => {
       throw new Error("Required AuthNexus Id");
     }
     console.log(authNexusId, "authNexusId");
-    const authFeature = await AuthNexusFeature.find({
+    const authFeature = await AuthNexusFeatures.find({
       authNexusId: authNexusId,
     });
     console.log(authFeature);
@@ -87,15 +89,14 @@ export const getAuthNexusFeatureService = async ({ authNexusId }) => {
 
 export const updateAuthNexusFeatureService = async ({ authNexusId }, body) => {
   try {
-    const authNexusFeature = await AuthNexusFeature.findOneAndUpdate(
+    const authNexusFeature = await AuthNexusFeatures.findOneAndUpdate(
       { authNexusId, featureCode: body.featureCode },
       body,
       { upsert: true }
     );
+    console.log(authNexusFeature, "authNexusFeature")
     if (authNexusFeature) {
       return { message: "Feature updated successfully!!" };
-    } else {
-      return { message: "Failed to Update Feature" };
     }
   } catch (error) {
     throw new Error(error ? error : "Failed to update authNexus feature");
@@ -127,55 +128,67 @@ export const deleteUserRoleService = async (params) => {
 };
 
 export const updateUserRoleService = async ({ authNexusId }, body) => {
+  console.log("service console");
+  console.log("Body:", body);
   const arrayUserId = body.users || [];
   try {
+    console.log("Querying with authNexusId:", authNexusId, "and roleId:", body.roleId);
     const user = await UserRoles.findOne({ authNexusId, roleId: body.roleId });
+    console.log("User found:", user);
+    
     if (user) {
       const userIds = user?.users || [];
       const userIdOld = arrayUserId.filter((obj) =>
-        userIds.filter((x) => x.userId === obj.userId)
+        userIds.some((x) => x.userId === obj.userId)
       );
       const userIdNew = userIds.filter((obj) =>
-        arrayUserId.filter((x) => x.userId != obj.userId)
+        !arrayUserId.some((x) => x.userId === obj.userId)
       );
       body.users = userIdNew.concat(userIdOld) || [];
+      
       const userRole = await UserRoles.findOneAndUpdate(
         { authNexusId, roleId: body.roleId },
         body,
-        { upsert: true }
+        { upsert: true, new: true }  // Added 'new: true' to return the updated document
       );
+      console.log("Updated UserRole:", userRole);
+      
       if (userRole) {
         return { message: "Role updated successfully!!" };
       } else {
         return { message: "Failed to update role" };
       }
+    } else {
+      return { message: "Role not found" };
     }
   } catch (error) {
-    throw new Error(error ? error : "Failed to update role");
+    console.error("Error updating role:", error);
+    throw new Error(error ? error.message : "Failed to update role");
   }
 };
 
+
 export const getUsersByRoleIdService = async ({ roleId }) => {
   console.log(roleId, "roleId");
-  // try {
-  //   const role = await UserRoles.findOne({ roleId: roleId });
-  //   if (!role) {
-  //     throw new Error("Role not found");
-  //   }
-  //   console.log(role, "role");
-  //   const userIds = role.users?.map((x) => x.userId) || [];
-  //   console.log(userIds, "userIds");
-  //   const users = await User.find({ _id: { $in: userIds } });
-  //   console.log(users, "users");
-  //   if (!users.length) {
-  //     throw new Error("Users not found");
-  //   }
+  try {
+    const role = await UserRoles.findOne({ roleId: roleId });
+    if (!role) {
+      throw new Error("Role not found");
+    }
+    console.log(role, "role");
+    const userIds = role.users?.map((x) => x.userId) || [];
+    console.log(userIds, "userIds");
+    const users = await User.find({ _id: { $in: userIds } });
+    console.log(users, "users");
+    if (!users.length) {
+      throw new Error("Users not found");
+    }
 
-  //   return users;
-  // } catch (error) {
-  //   console.error("Error fetching users by role ID:", error);
-  //   throw new Error("Failed to get users by role ID");
-  // }
+    return users;
+  } catch (error) {
+    console.error("Error fetching users by role ID:", error);
+    throw new Error("Failed to get users by role ID");
+  }
 };
 
 export const addAuthNexusFeatureService = async (data) => {
@@ -183,7 +196,7 @@ export const addAuthNexusFeatureService = async (data) => {
     if (!data) {
       throw new Error("Data is required to add feature");
     }
-    const addFeature = await AuthNexusFeature.create(data);
+    const addFeature = await AuthNexusFeatures.create(data);
     console.log(addFeature, "addFeature");
     return addFeature;
   } catch (error) {
@@ -193,16 +206,18 @@ export const addAuthNexusFeatureService = async (data) => {
 };
 
 export const getRolesByUserIdService = async ({ userId }) => {
-  // try {
-  //   const users = UserRoles.find({ "users.userId": userId });
-  //   if (users) {
-  //     const roleIds = users?.map((x) => x.roleId) || [];
-  //     const res = await AuthRoles.find({ _id: { $in: roleIds } });
-  //     return res
-  //   } else{
-  //     throw new Error("User not found");
-  //   }
-  // } catch (error) {
-  //   throw new Error(error ? error : "Failed to fetch roles by userId")
-  // }
+  try {
+    const users = UserRoles.find({ "users.userId": userId });
+    console.log(users)
+    if (users) {
+      const roleIds = users?.map((x) => x.roleId) || [];
+      const res = await AuthRoles.find({ _id: { $in: roleIds } });
+      return res
+    } else{
+      throw new Error("User not found");
+    }
+  } catch (error) {
+    console.log(error);
+    throw new Error(error ? error : "Failed to fetch roles by userId")
+  }
 };
