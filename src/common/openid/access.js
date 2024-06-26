@@ -14,12 +14,16 @@ const canAccessModule = (userRole, moduleName) => {
 function authorizeModule(moduleName) {
   return function (req, res, next) {
     const userRole = req.user?.role;
+    console.log(userRole, "userRole");
+
+    if (!userRole) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
 
     if (canAccessModule(userRole, moduleName)) {
       next();
     } else {
       res.status(403).json({ error: "Forbidden" });
-      res.redirect("/");
     }
   };
 }
