@@ -1,15 +1,22 @@
 import { User } from "../auth/model.js";
 import { AuthNexusFeatures, AuthRoles, UserRoles } from "./model.js";
 
-export const getAuthNexusRolesService = async ({ authNexusId }) => {
+export const getAuthNexusRolesService = async (authNexusId) => {
   const roleList = [];
   try {
     console.log(authNexusId, "authNexusId");
-    const roles = await AuthRoles.find({ authNexusId });
+    if (!authNexusId) {
+      throw new Error("authNexusId is required");
+    }
+    const roles = await AuthRoles.find({ authNexusId: authNexusId });
     console.log(roles, "roles");
+    if (!roles.length) {
+      console.warn(`No roles found for authNexusId: ${authNexusId}`);
+      return roleList;
+    }
     const rolePromises = roles.map(async (role) => {
       const userRoles = await UserRoles.findOne({ roleId: role._id });
-      console.log(userRoles);
+      console.log(userRoles, "userRoles"); 
       const count = userRoles?.users.length || 0;
       return {
         _id: role._id,
@@ -27,6 +34,34 @@ export const getAuthNexusRolesService = async ({ authNexusId }) => {
   console.log(roleList, "roleList");
   return roleList;
 };
+
+
+// export const getAuthNexusRolesService = async ( authNexusId ) => {
+//   const roleList = [];
+//   try {
+//     console.log(authNexusId, "authNexusId");
+//     const roles = await AuthRoles.find({authNexusId: authNexusId} );
+//     console.log(roles, "roles");
+//     const rolePromises = roles.map(async (role) => {
+//       const userRoles = await UserRoles.findOne({ roleId: role._id });
+//       console.log(userRoles);
+//       const count = userRoles?.users.length || 0;
+//       return {
+//         _id: role._id,
+//         roleName: role.roleName,
+//         noofUsers: count,
+//         roles: role.roles,
+//       };
+//     });
+
+//     const results = await Promise.all(rolePromises);
+//     roleList.push(...results);
+//   } catch (err) {
+//     console.error("Error fetching roles:", err.message);
+//   }
+//   console.log(roleList, "roleList");
+//   return roleList;
+// };
 
 export const updateAuthNexusRolesService = async ({ authNexusId }, body) => {
   console.log("incoming console");

@@ -32,7 +32,7 @@ const RolesClassModel = new Schema(
 const RolesModel = new Schema(
   {
     authNexusId: {
-      type: Schema.Types.ObjectId,
+      type: String,
       required: true,
     },
     roleName: {

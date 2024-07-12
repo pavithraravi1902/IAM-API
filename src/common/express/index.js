@@ -13,6 +13,7 @@ import { errorHandler as queryErrorHandler } from "querymen";
 import { logRequest } from "../../api/activity-montoring/controller.js";
 import { User } from "../../api/auth/model.js";
 import logger from "../winston/logger.js";
+import authenticateClient from "../middleware/middleware.js";
 
 export default (apiRoot, routes) => {
   const app = express();
@@ -76,6 +77,9 @@ export default (apiRoot, routes) => {
 
   // CORS
   app.use(cors(corsOptions));
+
+  // Authenticate clientId
+  app.use(authenticateClient);
 
   // Passport local strategy setup
   passport.use(

@@ -63,8 +63,10 @@
     "rand-token": "^1.0.1",
     "razorpay": "^2.9.3",
     "react-toastify": "^10.0.5",
+    "springedge": "^1.0.6",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
+    "twilio": "^5.2.2",
     "winston": "^3.13.0",
     "yamljs": "^0.3.0"
   },

@@ -1,38 +1,48 @@
-const handleTogglePasswordVisibility = () => {
-    setShowPassword((prev) => !prev);
-  };
+IAM - 
+>>Permission system that regulates access to AWS resources.
+>>Allows you to assign permission to groups of user.
+>>Access auditing using AWS cloud trail.
 
-<Grid>
-                  <TextField
-                    id="password"
-                    name="password"
-                    label="Password"
-                    variant="outlined"
-                    onChange={formik.handleChange}
-                    style={{ width: "55%" }}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.password}
-                    required
-                    type={showPassword ? "text" : "password"}
-                    helperText={
-                      formik.touched.password && !formik.values.password
-                        ? "Password mandatory"
-                        : ""
-                    }
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            onClick={handleTogglePasswordVisibility}
-                            edge="end"
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                  {formik.errors.password &&
-                    formik.touched.password &&
-                    formik.errors.password}
-                </Grid>
+IAM Key Concepts
+>>User - Specific individuals, can receive a personal logins.
+>>Groups - Collection of users with common theme (eg:- intern, developer, senior developer)
+>>Roles - Collection of Policies (DB read, DB write)
+>>Policy & Permissions - Low Level permissions to resources (Allow or Deny)
+
+EC2 - Elastic Compute Cloud
+>>Used to create virtual machines in the AWS Cloud.
+>>Can be used as a server for hosting websites and other web server management features such as port, storage and security.
+
+S3 - Simple Storage Service
+>>It offers highly secure and reductant file storage service.
+>>Amazon S3 Also offers integrations to help prevent data breaches
+>>you get data flexibility without almost zero latency
+
+SNS - Simple Notification Service
+>>It is an event driven computing hub
+>>Can send notifications to the users on any platform
+>>Flexibility of integration with application like php, nodejs, python..
+
+EBS - Elastic Bean Stack
+>>Made for developer as it helps in process of automatic creation of website infrastructure.
+>>It Automates the setup, configuration and provisioning of other AWS Service
+>>Handle deployment details like load balancing, autoscaling and health monitoring.
+
+RDS - Relational Database System
+>>Used to create Dedicated database instances.
+>>Makes Designing infrastructure more user friendly.
+>>Can supports multiple database engines like MySQL, SQL server, Postgre SQL...
+
+AWS Lambda - IAAC (infrastructure as a code)
+>> Serverless Architecture >> Code run without provisioning and manage server.
+
+---- Features  -----
+
+1. Serverless >> no need to manage
+2. Event Driven >> Function trigger various aws services example s3
+3. Auto Scaling >> Lambda automatic scaling
+4. pay-as-go-as-service >> pay for code run
+5. support multiple lang >> Java, phython, nodejs, RUBY, Go..
+
+---- How it Works   -----
+

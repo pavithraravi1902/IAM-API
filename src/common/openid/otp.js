@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import { jwtSecretKey } from "./jwt.js";
+import springedge from "springedge";
 
 export const verifyOTP = (userInputOTP, generatedOtp) => {
   return userInputOTP === generatedOtp;
