@@ -79,7 +79,7 @@ export default (apiRoot, routes) => {
   app.use(cors(corsOptions));
 
   // Authenticate clientId
-  app.use(authenticateClient);
+  //app.use(authenticateClient);
 
   // Passport local strategy setup
   passport.use(

@@ -8,6 +8,7 @@ import {
   resetPassword,
   searchUsers,
   sendOtpByEmail,
+  setupOtp,
   verifyEmailOtp,
   verifyResetToken,
 } from "./controller.js";
@@ -29,10 +30,12 @@ router.post("/verify-otp", verifyEmailOtp);
 
 router.post("/forgot-password", forgotPassword);
 
-router.get("/:token", verifyResetToken);
+router.get("/verify-token/:token", verifyResetToken);
 
 router.get("/user-search/filter", authorizeModule('user'), searchUsers);
 
 router.post("/reset-password", resetPassword);
+
+router.get("/setup-mfa", setupOtp);
 
 export default router;

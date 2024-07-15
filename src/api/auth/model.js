@@ -14,6 +14,11 @@ const userSchema = new Schema({
     lowercase: true,
     sparse: true,
   },
+  mfa: {
+    secret: String,
+    otpURI: String,
+    qrCode: String,
+  },
   password: { type: String },
   googleId: { type: String },
   pictureUrl: String,

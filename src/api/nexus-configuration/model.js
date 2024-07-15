@@ -10,14 +10,14 @@ const AppClientSchema = new Schema({
   clientName: { type: String },
   tokenValidity: { type: Number, default: 3600 },
   isActive: { type: Boolean, default: true },
-  callbackUrl: { type: String, required: true }
+  callbackUrl: { type: String, required: true },
 });
 
 const MFASchema = new Schema({
   enabled: { type: Boolean, default: false },
-  methods: [{ type: String }],
+  methods: [{ type: String }], //MFA methods include SMS, email, authenticator apps, or custom biometric methods.
   totp: {
-    issuer: { type: String },
+    issuer: { type: String }, //issuer or provider of the TOTP tokens
     period: { type: Number, default: 30 },
     digits: { type: Number, default: 6 }
   },
@@ -29,7 +29,7 @@ const MFASchema = new Schema({
 
 const AccountRecoverySchema = new Schema({
   enabled: { type: Boolean, default: true },
-  methods: [{ type: String }]
+  methods: [{ type: String }] //include SMS, email, authenticator apps
 });
 
 const PasswordPolicySchema = new Schema({
@@ -41,8 +41,8 @@ const PasswordPolicySchema = new Schema({
 });
 
 const UserAttributesSchema = new Schema({
-  standard: [{ type: String }],
-  custom: [{ type: String }]
+  standard: [{ type: String }], //our mandatory like username, email, mob, ....
+  custom: [{ type: String }] // user choice like address, dob...
 });
 
 const IdentityProviderSchema = new Schema({
@@ -56,13 +56,14 @@ const IdentityProviderSchema = new Schema({
   scopes: [{ type: String, required: true }]
 });
 
-//The DomainSettingsSchema is used to set a custom domain prefix for your application's URLs
+//generate URLs specific to that domain.
 
 const DomainSettingsSchema = new Schema({
   domainPrefix: { type: String }
 });
 
 const ApplicationConfigSchema = new Schema({
+  userId: {type: String, required: true},
   applicationName: { type: String, required: true },
   appClients: [AppClientSchema],
   domainSettings: DomainSettingsSchema,

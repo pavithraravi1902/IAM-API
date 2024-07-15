@@ -39,5 +39,6 @@ export const sendEmail = async (mailInfo) => {
 
 export const generateResetToken = (payload) => {
   const token = jwt.sign(payload, jwtSecretKey, { expiresIn: "1h" });
+  const activationToken = ActivationToken({ clientId, token, expiresAt });
   return token;
 };

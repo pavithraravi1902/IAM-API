@@ -42,6 +42,7 @@
 // export default authenticateClient;
 
 import ApplicationConfig from "../../api/nexus-configuration/model.js";
+import { generateResetToken } from "../openid/otp.js";
 
 const authenticateClient = async (req, res, next) => {
   console.log(req.headers, "request");
@@ -60,6 +61,7 @@ const authenticateClient = async (req, res, next) => {
       "appClients.clientSecret": clientsecret,
       "appClients.isActive": true,
     });
+    console.log(appConfig, "appConfig")
 
     if (!appConfig) {
       return res.status(401).json({ message: "Invalid client credentials or user account deactivated" });
@@ -71,7 +73,9 @@ const authenticateClient = async (req, res, next) => {
     if (!clientConfig || !clientConfig.isActive) {
       return res.status(401).json({ message: "Client account is deactivated" });
     }
-    res.redirect(clientConfig.callbackUrl);
+
+    const token = generateResetToken({ clientId: clientid }, appConfig.appClients[0].tokenValidity);
+    //res.redirect(clientConfig.callbackUrl);
 
     next();
   } catch (error) {

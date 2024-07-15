@@ -6,6 +6,7 @@ import {
   resetPasswordService,
   searchUsersService,
   sendOTPByEmailService,
+  setupOtpService,
   verifyEmailOtpService,
   verifyResetTokenService,
 } from "./service.js";
@@ -113,5 +114,16 @@ export const searchUsers = async (req, res) => {
     res
       .status(error.status || 500)
       .json({ message: error.message || "Internal server error" });
+  }
+};
+
+export const setupOtp = async (req, res) => {
+  console.log(req);
+  const { email } = req.query;
+  try {
+    const mfa = await setupOtpService(email);
+    res.status(200).json({ qrCodeUrl: mfa });
+  } catch (error) {
+    res.status(400).json({ message: error.message || "Failed to get QR code" });
   }
 };

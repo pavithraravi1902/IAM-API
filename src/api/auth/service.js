@@ -1,4 +1,5 @@
 import { sign, verify } from "../../common/openid/jwt.js";
+import { generateOTPURI, generateQRCode, generateSecret } from "../../common/openid/mfa.js";
 import { generateOtp, sendEmail } from "../../common/openid/otp.js";
 import googlePassport from "../../common/passport/google.js";
 import localPassport from "../../common/passport/local.js";
@@ -226,7 +227,7 @@ export const resetPasswordService = async (token, password) => {
 export const verifyResetTokenService = async (token) => {
   try {
     if (!token) {
-      throw new Error("JWT token must be provided");
+      throw new Error("JWT token must be provideds");
     }
     const decoded = await verify(token);
     const email = decoded.email;
@@ -284,5 +285,36 @@ export const searchUsersService = async (queryParams) => {
   } catch (error) {
     console.log(error);
     throw { message: error.message || "Error retrieving users", status: 500 };
+  }
+};
+
+export const setupOtpService = async (email) => {
+  try {
+    if (!email) {
+      throw new Error("Email is required");
+    }
+    const secret = generateSecret();
+    const otpURI = generateOTPURI(secret, email);
+    const qrCode = await generateQRCode(otpURI);
+
+    const user = await User.findOneAndUpdate(
+      { email },
+      {
+        $set: {
+          'mfa.secret': secret,
+          'mfa.otpURI': otpURI,
+          'mfa.qrCode': qrCode,
+        },
+      },
+      { new: true }
+    );
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return { secret, otpURI, qrCode };
+  } catch (error) {
+    throw new Error(error ? error : "Error generating OTP setup");
   }
 };

@@ -69,7 +69,6 @@ export const setupClientService = async (clientDetails) => {
   try {
     const clientId = uuidv4();
     const clientSecret = crypto.randomBytes(32).toString("hex");
-
     const newClientConfig = await ApplicationConfig.create({
       applicationName: clientDetails.applicationName,
       mfa: clientDetails.mfa || {
@@ -134,32 +133,15 @@ export const setupClientService = async (clientDetails) => {
 
 export const updateClientConfigService = async (clientId, updateDetails) => {
   try {
-    const existingConfig = await ApplicationConfig.findOne({
-      "appClients.clientId": clientId,
-    });
+    const updatedConfig = await ApplicationConfig.findOneAndUpdate(
+      { "appClients.clientId": clientId }, 
+      { $set: updateDetails }, 
+      { new: true, runValidators: true }
+    );
 
-    if (!existingConfig) {
+    if (!updatedConfig) {
       throw new Error("Client configuration not found");
     }
-
-    Object.keys(updateDetails).forEach((key) => {
-      if (key === "appClients" && Array.isArray(updateDetails[key])) {
-        updateDetails[key].forEach((client) => {
-          const existingClient = existingConfig.appClients.find(
-            (c) => c.clientId === clientId
-          );
-          if (existingClient) {
-            Object.keys(client).forEach((clientKey) => {
-              existingClient[clientKey] = client[clientKey];
-            });
-          }
-        });
-      } else {
-        existingConfig[key] = updateDetails[key];
-      }
-    });
-
-    const updatedConfig = await existingConfig.save();
 
     return {
       message: "Client configuration updated successfully",
