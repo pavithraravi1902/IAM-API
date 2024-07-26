@@ -6,9 +6,11 @@ import {
   resetPasswordService,
   searchUsersService,
   sendOTPByEmailService,
-  setupOtpService,
+  setSecurityQuestionsService,
+  setupAuthenticatorTotpService,
   verifyEmailOtpService,
   verifyResetTokenService,
+  verifySecurityQuestionsService,
 } from "./service.js";
 
 export const createUser = (req, res) => {
@@ -117,13 +119,38 @@ export const searchUsers = async (req, res) => {
   }
 };
 
-export const setupOtp = async (req, res) => {
+export const setupAuthenticatorTotp = async (req, res) => {
   console.log(req);
   const { email } = req.query;
   try {
-    const mfa = await setupOtpService(email);
+    const mfa = await setupAuthenticatorTotpService(email);
     res.status(200).json({ qrCodeUrl: mfa });
   } catch (error) {
     res.status(400).json({ message: error.message || "Failed to get QR code" });
   }
 };
+
+export const setSecurityQuestions = async (req, res) => {
+  try {
+    const userId = req.user._id; 
+    const securityQuestions = req.body.securityQuestions;
+
+    const response = await setSecurityQuestionsService(userId, securityQuestions);
+    res.status(200).send(response);
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+};
+
+export const verifySecurityQuestions = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const securityQuestions = req.body.securityQuestions;
+
+    const response = await verifySecurityQuestionsService(userId, securityQuestions);
+    res.status(200).send(response);
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+};
+

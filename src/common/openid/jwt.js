@@ -42,19 +42,18 @@ export const createResetToken = async (userId) => {
   }
 };
 
-export const validateToken = (req, res, next) => {
-  const token = req.headers['authorization']?.split(' ')[1];
-  
+export const authenticate = (req, res, next) => {
+  const token = req.headers["authorization"]?.split(" ")[1];
+  console.log(token);
   if (!token) {
-    return res.status(401).json({ message: 'No token provided' });
+    return res.status(401).json({ message: "No token provided" });
   }
-
   try {
     const decoded = jwt.verify(token, jwtSecretKey);
-    req.user = decoded; 
+    console.log(decoded, "decoded");
+    req.user = decoded;
     next();
   } catch (error) {
-    return res.status(401).json({ message: 'Invalid token' });
+    return res.status(401).json({ message: "Invalid token" });
   }
 };
-

@@ -1,5 +1,6 @@
 import express from "express";
 import passport from "passport";
+import authorizeModule from "../../common/openid/access.js";
 import {
   createUser,
   forgotPassword,
@@ -8,11 +9,13 @@ import {
   resetPassword,
   searchUsers,
   sendOtpByEmail,
-  setupOtp,
+  setSecurityQuestions,
+  setupAuthenticatorTotp,
   verifyEmailOtp,
   verifyResetToken,
+  verifySecurityQuestions
 } from "./controller.js";
-import authorizeModule from "../../common/openid/access.js";
+import { authenticate } from "../../common/openid/jwt.js";
 
 const router = express.Router();
 
@@ -22,7 +25,7 @@ router.post("/login", passport.authenticate("local"), login);
 
 //router.get("/", authorizeModule("user"), getUsers);
 
-router.get("/", authorizeModule('user'), getUsers);
+router.get("/", authorizeModule("user"), getUsers);
 
 router.post("/send-otp", sendOtpByEmail);
 
@@ -32,10 +35,14 @@ router.post("/forgot-password", forgotPassword);
 
 router.get("/verify-token/:token", verifyResetToken);
 
-router.get("/user-search/filter", authorizeModule('user'), searchUsers);
+router.get("/user-search/filter", authorizeModule("user"), searchUsers);
 
 router.post("/reset-password", resetPassword);
 
-router.get("/setup-mfa", setupOtp);
+router.get("/setup-mfa", setupAuthenticatorTotp);
+
+router.post("/security-questions", authenticate, setSecurityQuestions);
+
+router.post("/verify-security-questions", authenticate, verifySecurityQuestions);
 
 export default router;

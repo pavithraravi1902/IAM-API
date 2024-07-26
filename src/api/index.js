@@ -7,7 +7,9 @@ import document from "./file-upload/index.js";
 import payment from "./payment/index.js";
 import roles from "./role-management/index.js";
 import profile from "./user-profile/index.js";
-import clientSetup from "./nexus-configuration/index.js"
+import clientSetup from "./nexus-configuration/index.js";
+import metadatacollection from "./metadata-collection/index.js";
+import cognito from "./cognito/index.js";
 
 const router = express.Router();
 
@@ -28,5 +30,9 @@ router.use("/admin-configs", adminConfigs);
 router.use("/activity-monitoring", activityMonitoring);
 
 router.use("/client-set-up", clientSetup);
+
+router.use("/meta-data", metadatacollection);
+
+router.use("/cognito", cognito);
 
 export default router;

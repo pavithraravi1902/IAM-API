@@ -5,6 +5,7 @@ const { Schema } = mongoose;
 
 const userSchema = new Schema({
   username: { type: String, required: true },
+  applicationId: {type: String},
   email: {
     type: String,
     match: /^\S+@\S+\.\S+$/,
@@ -19,6 +20,18 @@ const userSchema = new Schema({
     otpURI: String,
     qrCode: String,
   },
+  securityQuestions: [
+    {
+      questionKey: {
+        type: String,
+        required: true,
+      },
+      answer: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
   password: { type: String },
   googleId: { type: String },
   pictureUrl: String,

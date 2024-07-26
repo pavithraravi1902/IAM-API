@@ -1,0 +1,26 @@
+{
+    "collectionName": "securityQuestion",
+    "collectionItem": [
+      { "optionKey": "ques1", "optionValue": "What was the name of your first pet?" },
+      { "optionKey": "ques2", "optionValue": "What is your mother's maiden name?" },
+      { "optionKey": "ques3", "optionValue": "What was the make and model of your first car?" },
+      { "optionKey": "ques4", "optionValue": "In what city were you born?" },
+      { "optionKey": "ques5", "optionValue": "What was your high school's mascot?" },
+      { "optionKey": "ques6", "optionValue": "What is the name of your favorite teacher?" },
+      { "optionKey": "ques7", "optionValue": "What is the name of the street you grew up on?" },
+      { "optionKey": "ques8", "optionValue": "What is your father's middle name?" },
+      { "optionKey": "ques9", "optionValue": "What is the name of your first employer?" },
+      { "optionKey": "ques10", "optionValue": "What is your favorite book?" },
+      { "optionKey": "ques11", "optionValue": "What is your favorite movie?" },
+      { "optionKey": "ques12", "optionValue": "What is your favorite color?" },
+      { "optionKey": "ques13", "optionValue": "What was the name of your first school?" },
+      { "optionKey": "ques14", "optionValue": "What is your best friend's first name?" },
+      { "optionKey": "ques15", "optionValue": "What is your favorite food?" },
+      { "optionKey": "ques16", "optionValue": "What was your childhood nickname?" },
+      { "optionKey": "ques17", "optionValue": "What is the name of your favorite childhood friend?" },
+      { "optionKey": "ques18", "optionValue": "In what city did you meet your spouse/partner?" },
+      { "optionKey": "ques19", "optionValue": "What was the name of your first pet's breed?" },
+      { "optionKey": "ques20", "optionValue": "What is the name of your favorite sports team?" }
+    ]
+  }
+  

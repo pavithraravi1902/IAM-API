@@ -1,5 +1,9 @@
 import { sign, verify } from "../../common/openid/jwt.js";
-import { generateOTPURI, generateQRCode, generateSecret } from "../../common/openid/mfa.js";
+import {
+  generateOTPURI,
+  generateQRCode,
+  generateSecret,
+} from "../../common/openid/mfa.js";
 import { generateOtp, sendEmail } from "../../common/openid/otp.js";
 import googlePassport from "../../common/passport/google.js";
 import localPassport from "../../common/passport/local.js";
@@ -288,7 +292,7 @@ export const searchUsersService = async (queryParams) => {
   }
 };
 
-export const setupOtpService = async (email) => {
+export const setupAuthenticatorTotpService = async (email) => {
   try {
     if (!email) {
       throw new Error("Email is required");
@@ -301,20 +305,68 @@ export const setupOtpService = async (email) => {
       { email },
       {
         $set: {
-          'mfa.secret': secret,
-          'mfa.otpURI': otpURI,
-          'mfa.qrCode': qrCode,
+          "mfa.secret": secret,
+          "mfa.otpURI": otpURI,
+          "mfa.qrCode": qrCode,
         },
       },
       { new: true }
     );
 
     if (!user) {
-      throw new Error('User not found');
+      throw new Error("User not found");
     }
 
     return { secret, otpURI, qrCode };
   } catch (error) {
     throw new Error(error ? error : "Error generating OTP setup");
+  }
+};
+
+export const setSecurityQuestionsService = async (
+  userId,
+  securityQuestions
+) => {
+  try {
+    const existingRecord = await User.findOne({ userId });
+    if (existingRecord) {
+      // Update existing record
+      existingRecord.securityQuestions = securityQuestions;
+      await existingRecord.save();
+      return { message: "Security questions updated successfully" };
+    } else {
+      // Create new record
+      const newRecord = new UserSecurityQuestions({
+        userId,
+        securityQuestions,
+      });
+      await newRecord.save();
+      return { message: "Security questions set successfully" };
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const verifySecurityQuestionsService = async (userId, securityQuestions) => {
+  try {
+    const userRecord = await User.findOne({ userId });
+    if (!userRecord) {
+      throw new Error("User not found");
+    }
+    if (!userRecord.securityQuestions || userRecord.securityQuestions.length !== securityQuestions.length) {
+      throw new Error("Security questions not set or mismatch in number of questions");
+    }
+    for (const sq of securityQuestions) {
+      const userQuestion = userRecord.securityQuestions.find(
+        (q) => q.questionKey === sq.questionKey
+      );
+      if (!userQuestion || userQuestion.answer !== sq.answer) {
+        throw new Error("Security question verification failed");
+      }
+    }
+    return { message: "Security questions verified successfully" };
+  } catch (error) {
+    throw error;
   }
 };
