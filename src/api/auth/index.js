@@ -2,6 +2,7 @@ import express from "express";
 import passport from "passport";
 import authorizeModule from "../../common/openid/access.js";
 import {
+  createAdminUser,
   createUser,
   forgotPassword,
   getUsers,
@@ -20,6 +21,8 @@ import { authenticate } from "../../common/openid/jwt.js";
 const router = express.Router();
 
 router.post("/", createUser);
+
+router.post("/admin-user", createAdminUser)
 
 router.post("/login", passport.authenticate("local"), login);
 

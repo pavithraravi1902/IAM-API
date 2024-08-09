@@ -1,20 +1,20 @@
-# --1
 version: '3.8'
 services:
   localstack:
     image: localstack/localstack
     container_name: localstack-main
     ports:
-      - "4566:4566"
-      - "4571:4571"
+      - "4566:4566"  # Default LocalStack port for all services
+      - "4510:4510"  # Port for Cognito service (if needed)
     environment:
-      - SERVICES=s3
+      - SERVICES=cognito-idp,s3  # Add cognito-idp to the list of services
       - PERSISTENCE=1
     volumes:
-      - ./localstack-storage:/tmp
+      - ./localstack-storage:/tmp 
 
 volumes:
-  localstack_storage:
+  localstack-storage:
+
 
 # # # --2
 # # version: "3.8"

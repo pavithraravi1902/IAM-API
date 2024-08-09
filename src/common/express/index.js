@@ -58,7 +58,11 @@ export default (apiRoot, routes) => {
 
   // Static files and view engine setup
   app.use(express.static(path.join(__dirname, "public")));
-  app.set("view engine", "ejs");
+ // Set the views directory
+app.set('views', path.join(__dirname, 'views'));
+
+// Set the view engine to ejs
+app.set('view engine', 'ejs');
 
   const dbLogger = (req, res, next) => {
     logRequest(req, res, next);
@@ -164,6 +168,16 @@ export default (apiRoot, routes) => {
     } else {
       next();
     }
+  });
+
+  app.get('/', (req, res) => {
+    const clientId = '5j6sue1pf7pvv36ehq2carmc03';
+    const domain = 'https://authhub.auth.ap-southeast-2.amazoncognito.com';
+    const redirectUri = 'http://localhost:3001/callback';
+    
+    const signInUrl = `https://${domain}/login?client_id=${clientId}&response_type=code&scope=openid+profile+email&redirect_uri=${redirectUri}`;
+    
+    res.redirect(signInUrl);
   });
 
   // Global error handler

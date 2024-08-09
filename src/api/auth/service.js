@@ -1,3 +1,4 @@
+import { AdminAddUserToGroupCommand, AdminCreateUserCommand } from "@aws-sdk/client-cognito-identity-provider";
 import { sign, verify } from "../../common/openid/jwt.js";
 import {
   generateOTPURI,
@@ -348,14 +349,22 @@ export const setSecurityQuestionsService = async (
   }
 };
 
-export const verifySecurityQuestionsService = async (userId, securityQuestions) => {
+export const verifySecurityQuestionsService = async (
+  userId,
+  securityQuestions
+) => {
   try {
     const userRecord = await User.findOne({ userId });
     if (!userRecord) {
       throw new Error("User not found");
     }
-    if (!userRecord.securityQuestions || userRecord.securityQuestions.length !== securityQuestions.length) {
-      throw new Error("Security questions not set or mismatch in number of questions");
+    if (
+      !userRecord.securityQuestions ||
+      userRecord.securityQuestions.length !== securityQuestions.length
+    ) {
+      throw new Error(
+        "Security questions not set or mismatch in number of questions"
+      );
     }
     for (const sq of securityQuestions) {
       const userQuestion = userRecord.securityQuestions.find(

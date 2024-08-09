@@ -36,6 +36,18 @@ export const login = async (req, res) => {
   }
 };
 
+export const createAdminUser = async (req, res) => {
+  try {
+    const user = await createAdminUserService(req);
+    res.status(200).json({ message: "User login successfully", user });
+  } catch (error) {
+    res
+      .status(error.status || 401)
+      .json({ message: error.message || "Authentication failed" });
+  }
+};
+
+
 export const getUsers = (req, res) => {
   getUsersService()
     .then((user) => {
