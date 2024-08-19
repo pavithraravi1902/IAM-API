@@ -170,14 +170,32 @@ app.set('view engine', 'ejs');
     }
   });
 
-  app.get('/', (req, res) => {
+  app.post('/users/callback', async (req, res) => {
+    const { code } = req.body;
     const clientId = '5j6sue1pf7pvv36ehq2carmc03';
+    const clientSecret = '8rvpflf47fjvn9m8prsj298qf1v4opjnek645pn74cjko0uubg0';
     const domain = 'https://authhub.auth.ap-southeast-2.amazoncognito.com';
-    const redirectUri = 'http://localhost:3001/callback';
-    
-    const signInUrl = `https://${domain}/login?client_id=${clientId}&response_type=code&scope=openid+profile+email&redirect_uri=${redirectUri}`;
-    
-    res.redirect(signInUrl);
+    const redirectUri = 'http://localhost:3000/callback';
+  
+    const tokenEndpoint = `https://authhub.auth.ap-southeast-2.amazoncognito.com/oauth2/token`;
+  
+    try {
+      const response = await axios.post(tokenEndpoint, querystring.stringify({
+        grant_type: 'authorization_code',
+        client_id: clientId,
+        client_secret: clientSecret,
+        code,
+        redirect_uri: redirectUri
+      }), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      });
+      res.json(response.data);
+    } catch (error) {
+      console.error('Token exchange error', error);
+      res.status(500).json({ message: 'Authentication failed' });
+    }
   });
 
   // Global error handler

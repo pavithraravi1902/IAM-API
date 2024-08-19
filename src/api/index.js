@@ -10,6 +10,7 @@ import profile from "./user-profile/index.js";
 import clientSetup from "./nexus-configuration/index.js";
 import metadatacollection from "./metadata-collection/index.js";
 import cognito from "./cognito/index.js";
+import userPool from "./user-pool/index.js"
 
 const router = express.Router();
 
@@ -34,5 +35,7 @@ router.use("/client-set-up", clientSetup);
 router.use("/meta-data", metadatacollection);
 
 router.use("/cognito", cognito);
+
+router.use("/user-pool", userPool)
 
 export default router;
