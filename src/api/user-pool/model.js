@@ -21,12 +21,12 @@ const UserSchema = new Schema({
   last_login: { type: Date },
 
   provider: { type: String },
-  provider_id: { type: String, unique: true },
+  provider_id: { type: String },
   federated_attributes: { type: Map, of: String },
 });
 
 const GroupSchema = new Schema({
-  name: { type: String, required: true },
+  name: { type: String },
   description: { type: String },
   permissions: { type: Map, of: Boolean },
   members: [{ type: Schema.Types.ObjectId, ref: "User" }],
@@ -39,32 +39,132 @@ const SigninExpSchema = new Schema({
   multi_factor_auth: { type: Boolean, default: false },
   login_message: { type: String },
   max_attempts: { type: Number, default: 5 },
-  lockout_duration: { type: Number, default: 30 },
+  logout_duration: { type: Number, default: 30 },
+  federated_identity_providers: [{ provider: String, provider_id: String }],
+  password_policy: {
+    min_length: { type: Number, default: 8 },
+    require_uppercase: { type: Boolean, default: true },
+    require_numbers: { type: Boolean, default: true },
+    allowed_symbols: { type: String, default: "!@#$%^&*()_+[]{}|;:,.<>?" },
+  },
+  user_account_recovery: {
+    type: String,
+    enum: ["email", "sms"],
+    default: "email",
+  },
 });
 
 const SignupExpSchema = new Schema({
-  required_attributes: { type: [String], default: ["email", "password"] },
+  required_attributes: {
+    type: [String],
+    default: ["email", "password", "address", "phone_number"],
+  },
   auto_confirm: { type: Boolean, default: false },
   welcome_message: { type: String },
   captcha_required: { type: Boolean, default: false },
   invite_only: { type: Boolean, default: false },
   custom_questions: [{ question: String, answer: String }],
+  attribute_verification: {
+    method: {
+      type: String,
+      enum: ["Cognito-assisted", "self-managed"],
+      default: "Cognito-assisted",
+    },
+    auto_send_verification_messages: { type: Boolean, default: true },
+    verify_attributes: { type: [String], default: ["email"] },
+    keep_original_on_update_pending: { type: Boolean, default: true },
+    active_attributes_on_pending: { type: [String], default: ["email"] },
+  },
+  account_confirmation_required: { type: Boolean, default: true },
+  custom_attributes: [
+    {
+      name: { type: String },
+      type: {
+        type: String,
+        enum: ["String", "Number", "Date", "Boolean"],
+        required: true,
+      },
+      min_length: { type: Number, default: 0 },
+      max_length: { type: Number, default: 255 },
+      mutable: { type: Boolean, default: true },
+    },
+  ],
+  self_service_signup: { type: Boolean, default: true },
 });
 
 const MessageSchema = new Schema({
   type: { type: String, enum: ["email", "sms"], required: true },
   subject: { type: String },
   template: { type: String, required: true },
-  sender_email: { type: String },
-  sender_name: { type: String },
+  sender_email: { type: String, default: "pavithrar@bloomlync.com" },
+  sender_name: {
+    type: String,
+    default: "Pavithra Ravi <pavithraravi1902@gmail.com>",
+  },
   send_on: { type: String, enum: ["signup", "password_reset", "custom"] },
+  reply_to_email: { type: String, default: "pavithraravi1902@gmail.com" },
+  templates: [
+    {
+      message_type: {
+        type: String,
+        enum: ["verification", "invitation", "mfa"],
+        required: true,
+      },
+      delivery_method: {
+        type: [String],
+        enum: ["SMS", "Email"],
+        required: true,
+      },
+    },
+  ],
 });
 
-const AppIntegrationSchema = new Schema({
+const AppClientSchema = new Schema({
+  name: { type: String, required: true },
   client_id: { type: String, required: true },
   client_secret: { type: String, required: true },
   redirect_uris: { type: [String], required: true },
-  hosted_ui_domain: {type: [String]},
+  authentication_flows: {
+    type: [String],
+    enum: ["ALLOW_REFRESH_TOKEN_AUTH", "ALLOW_USER_SRP_AUTH", "ALLOW_CUSTOM_AUTH", "ALLOW_ADMIN_USER_PASSWORD_AUTH", "ALLOW_USER_PASSWORD_AUTH"],
+  },
+  session_duration: { type: Number, default: 3 * 60 }, // in seconds
+  refresh_token_expiration: { type: Number, default: 30 }, // in days
+  access_token_expiration: { type: Number, default: 60 }, // in minutes
+  id_token_expiration: { type: Number, default: 60 }, // in minutes
+  advanced_auth_settings: {
+    token_revocation: { type: Boolean, default: false },
+    prevent_user_existence_errors: { type: Boolean, default: false },
+  },
+  attribute_permissions: {
+    read: { type: [String] },
+    write: { type: [String] },
+  },
+  pinpoint_analytics: {
+    enabled: { type: Boolean, default: false },
+  },
+  hosted_ui: {
+    status: { type: String, enum: ["available", "disabled"], default: "available" },
+    callback_urls: { type: [String] },
+    signout_urls: { type: [String] },
+    identity_providers: { type: [String] },
+    oauth_grant_types: { type: [String], enum: ["authorization_code", "implicit"], default: ["authorization_code"] },
+    openid_connect_scopes: { type: [String], enum: ["email", "openid", "phone"], default: ["email", "openid"] },
+    custom_scopes: { type: [String] },
+  },
+  hosted_ui_customization: {
+    logo: { type: String },
+    custom_css: { type: String },
+  },
+});
+
+
+const AppIntegrationSchema = new Schema({
+  hosted_ui_domain: {
+    type: String,
+    default: "https://authhub.auth.ap-southeast-2.authNexus.com",
+  },
+  custom_domain: { type: String },
   scopes: { type: [String] },
   grant_types: {
     type: [String],
@@ -72,6 +172,14 @@ const AppIntegrationSchema = new Schema({
     required: true,
   },
   token_lifetime: { type: Number, default: 3600 },
+  resource_servers: [
+    {
+      name: { type: String },
+      identifier: { type: String },
+      custom_scopes: [{ type: String }],
+    },
+  ],
+  app_clients: [AppClientSchema], 
 });
 
 const UserPoolPropertiesSchema = new Schema({
@@ -86,7 +194,6 @@ const UserPoolPropertiesSchema = new Schema({
   session_timeout: { type: Number, default: 3600 },
   email_verification_required: { type: Boolean, default: true },
 });
-
 
 const UserPoolSchema = new Schema({
   name: { type: String, required: true },
