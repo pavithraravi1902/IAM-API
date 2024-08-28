@@ -26,6 +26,7 @@ import {
   addUsersToGroupService,
   addCustomAttributeService,
   getMessagingSettingsByMessageIdService,
+  getUserPoolDashboardDataService,
 } from "./service.js";
 
 /********** User Pool Controllers **********/
@@ -336,5 +337,15 @@ export const deleteAppClientById = async (req, res) => {
     res.json(updatedUserPool);
   } catch (error) {
     res.status(400).json({ error: error.message });
+  }
+};
+
+export const getDashboardData = async (req, res) => {
+  const { userPoolId } = req.params;
+  try {
+    const data = await getUserPoolDashboardDataService(userPoolId);
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };

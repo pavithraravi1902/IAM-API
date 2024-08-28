@@ -911,6 +911,410 @@ paths:
           description: "Invalid input"
         "200":
           description: "successfull Operation"
+  /user-pool:
+    post:
+      tags:
+        - User Pool 
+      summary: Create User Pool
+      description: "User pool crud"
+      operationId: "createUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Create User Pool"
+          required: true
+          schema:
+            $ref: "#/definitions/UserPool"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /user-pool/{userPoolId}:
+    put:
+      tags:
+        - User Pool 
+      summary: User pool Update
+      description: "User pool Update"
+      operationId: "updateUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Update User Pool"
+          required: true
+          schema:
+            $ref: "#/definitions/UserPool" 
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    delete:
+      tags:
+        - User Pool 
+      summary: delete user pool
+      description: "User pool crud"
+      operationId: "delete user pool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /user-pool/{userPoolId}/users:
+    get:
+      tags:
+        - User Pool 
+      summary: List User pool Data
+      description: "List User pool Data"
+      operationId: "listUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    post:
+      tags:
+        - User Pool 
+      summary: Create User in user Pool
+      description: "Create User in user Pool"
+      operationId: "createUserInUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "User Pool"
+          required: true
+          schema:
+            $ref: "#/definitions/User" 
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /user-pool/{userPoolId}/users/{userId}:
+    get:
+      tags:
+        - User Pool 
+      summary: Get User in userpool
+      description: "Get User in User pool"
+      operationId: "getUserInUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - name: "userId"
+          in: "path"
+          description: "userId"
+          required: true
+          type: "string" 
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    post:
+      tags:
+        - User Pool 
+      summary: Update User in user Pool
+      description: "Update User in user Pool"
+      operationId: "updateUserInUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - name: "userId"
+          in: "path"
+          description: "userId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "User Pool"
+          required: true
+          schema:
+            $ref: "#/definitions/User" 
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    delete:
+      tags:
+        - User Pool 
+      summary: delete user in user pool
+      description: "User pool crud"
+      operationId: "delete user in user pool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - name: "userId"
+          in: "path"
+          description: "userId"
+          required: true
+          type: "string"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /user-pool/{userPoolId}/groups:
+    get:
+      tags:
+        - User Pool 
+      summary: List group in user pool
+      description: "List group in user pool"
+      operationId: "listGroup"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    post:
+      tags:
+        - User Pool 
+      summary: Create group in user Pool
+      description: "Create group in user Pool"
+      operationId: "createGroupInUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "User Pool"
+          required: true
+          schema:
+            $ref: "#/definitions/Group" 
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /user-pool/{userPoolId}/groups/{groupId}:
+    get:
+      tags:
+        - User Pool 
+      summary: Get Group in userpool
+      description: "Get User in User pool"
+      operationId: "getUserInUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - name: "groupId"
+          in: "path"
+          description: "groupId"
+          required: true
+          type: "string" 
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    post:
+      tags:
+        - User Pool 
+      summary: Update Group in user Pool
+      description: "Update Group in user Pool"
+      operationId: "updateGroupInUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - name: "groupId"
+          in: "path"
+          description: "groupId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Group"
+          required: true
+          schema:
+            $ref: "#/definitions/Group" 
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    put:
+      tags:
+        - User Pool 
+      summary: Update Group in user Pool
+      description: "Update Group in user Pool"
+      operationId: "updateGroupInUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - name: "groupId"
+          in: "path"
+          description: "groupId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Group"
+          required: true
+          schema:
+            $ref: "#/definitions/Group" 
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    delete:
+      tags:
+        - User Pool 
+      summary: delete group in user pool
+      description: "User pool crud"
+      operationId: "delete group in user pool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - name: "groupId"
+          in: "path"
+          description: "groupId"
+          required: true
+          type: "string"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /user-pool/{userPoolId}/groups/{groupId}/users/{userId}:
+    delete:
+      tags:
+        - User Pool 
+      summary: delete group in user pool
+      description: "User pool crud"
+      operationId: "delete group in user pool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - name: "groupId"
+          in: "path"
+          description: "groupId"
+          required: true
+          type: "string"
+        - name: "userId"
+          in: "path"
+          description: "groupId"
+          required: true
+          type: "string"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
 securityDefinitions:
   api_key:
     type: "apiKey"
@@ -1116,3 +1520,617 @@ definitions:
         type: string
       content:
         type: string
+  User:
+    type: object
+    properties:
+      username:
+        type: string
+        unique: true
+      email:
+        type: string
+        required: true
+        unique: true
+      phone_number:
+        type: string
+      password:
+        type: string
+      custom_attributes:
+        type: object
+      additionalProperties:
+        type: string
+      status:
+        type: string
+        enum:
+          - active
+          - pending
+          - blocked
+        default: active
+      email_verified:
+        type: boolean
+        default: false
+      phone_verified:
+        type: boolean
+        default: false
+      mfa_enabled:
+        type: boolean
+        default: false
+      roles:
+        type: array
+        items:
+          type: string
+      created_at:
+        type: string
+        format: date-time
+        default: "now"
+      updated_at:
+        type: string
+        format: date-time
+        default: "now"
+      last_login:
+        type: string
+        format: date-time
+      provider:
+        type: string
+      provider_id:
+        type: string
+      federated_attributes:
+        type: object
+      additionalProperties:
+        type: string
+  Group:
+    type: object
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+      permissions:
+        type: object
+      additionalProperties:
+        type: boolean
+      members:
+        type: array
+        items:
+          type: string
+          format: ObjectId
+      created_at:
+        type: string
+        format: date-time
+        default: "now"
+      updated_at:
+        type: string
+        format: date-time
+        default: "now"
+  SigninExpSchema:
+    type: object
+    properties:
+      allowed_flows:
+        type: array
+        items:
+          type: string
+          enum:
+            - password
+            - sso
+            - mfa
+      multi_factor_auth:
+        type: boolean
+        default: false
+      login_message:
+        type: string
+      max_attempts:
+        type: integer
+        default: 5
+      logout_duration:
+        type: integer
+        default: 30
+      federated_identity_providers:
+        type: array
+        items:
+          type: object
+          properties:
+            provider:
+              type: string
+            provider_id:
+              type: string
+      password_policy:
+        type: object
+        properties:
+          min_length:
+            type: integer
+            default: 8
+          require_uppercase:
+            type: boolean
+            default: true
+          require_numbers:
+            type: boolean
+            default: true
+          allowed_symbols:
+            type: string
+            default: "!@#$%^&*()_+[]{}|;:,.<>?"
+      user_account_recovery:
+        type: string
+        enum:
+          - email
+          - sms
+        default: email
+  SigninExpSchema:
+    type: object
+    properties:
+      allowed_flows:
+        type: array
+        items:
+          type: string
+          enum:
+            - password
+            - sso
+            - mfa
+      multi_factor_auth:
+        type: boolean
+        default: false
+      login_message:
+        type: string
+      max_attempts:
+        type: integer
+        default: 5
+      logout_duration:
+        type: integer
+        default: 30
+      federated_identity_providers:
+        type: array
+        items:
+          type: object
+          properties:
+            provider:
+              type: string
+            provider_id:
+              type: string
+      password_policy:
+        type: object
+        properties:
+          min_length:
+            type: integer
+            default: 8
+          require_uppercase:
+            type: boolean
+            default: true
+          require_numbers:
+            type: boolean
+            default: true
+          allowed_symbols:
+            type: string
+            default: "!@#$%^&*()_+[]{}|;:,.<>?"
+      user_account_recovery:
+        type: string
+        enum:
+          - email
+          - sms
+        default: email
+  SignupExpSchema:
+    type: object
+    properties:
+      required_attributes:
+        type: array
+        items:
+          type: string
+        default: ["email", "password", "address", "phone_number"]
+      auto_confirm:
+        type: boolean
+        default: false
+      welcome_message:
+        type: string
+      captcha_required:
+        type: boolean
+        default: false
+      invite_only:
+        type: boolean
+        default: false
+      custom_questions:
+        type: array
+        items:
+          type: object
+          properties:
+            question:
+              type: string
+            answer:
+              type: string
+      attribute_verification:
+        type: object
+        properties:
+          method:
+            type: string
+            enum:
+              - Cognito-assisted
+              - self-managed
+            default: Cognito-assisted
+          auto_send_verification_messages:
+            type: boolean
+            default: true
+          verify_attributes:
+            type: array
+          items:
+            type: string
+            default: ["email"]
+          keep_original_on_update_pending:
+            type: boolean
+            default: true
+          active_attributes_on_pending:
+            type: array
+            items:
+              type: string
+            default: ["email"]
+      account_confirmation_required:
+        type: boolean
+        default: true
+      custom_attributes:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+            type:
+              type: string
+              enum:
+                - String
+                - Number
+                - Date
+                - Boolean
+            min_length:
+              type: integer
+              default: 0
+            max_length:
+              type: integer
+              default: 255
+            mutable:
+              type: boolean
+              default: true
+      self_service_signup:
+        type: boolean
+        default: true
+  Message:
+    type: object
+    properties:
+      type:
+        type: string
+        enum:
+          - email
+          - sms
+        required: true
+      subject:
+        type: string
+      template:
+        type: string
+        required: true
+      sender_email:
+        type: string
+        default: "pavithrar@bloomlync.com"
+      sender_name:
+        type: string
+        default: "Pavithra Ravi <pavithraravi1902@gmail.com>"
+      send_on:
+        type: string
+        enum:
+          - signup
+          - password_reset
+          - custom
+      reply_to_email:
+        type: string
+        default: "pavithraravi1902@gmail.com"
+      templates:
+        type: array
+        items:
+          type: object
+          properties:
+            message_type:
+              type: string
+              enum:
+                - verification
+                - invitation
+                - mfa
+              required: true
+            delivery_method:
+              type: array
+              items:
+                type: string
+                enum:
+                  - SMS
+                  - Email
+              required: true
+  AppClientSchema:
+    type: object
+    properties:
+      name:
+        type: string
+        required: true
+      client_id:
+        type: string
+        required: true
+      client_secret:
+        type: string
+        required: true
+      redirect_uris:
+        type: array
+        items:
+          type: string
+        required: true
+      authentication_flows:
+        type: array
+        items:
+          type: string
+          enum:
+            - ALLOW_REFRESH_TOKEN_AUTH
+            - ALLOW_USER_SRP_AUTH
+            - ALLOW_CUSTOM_AUTH
+            - ALLOW_ADMIN_USER_PASSWORD_AUTH
+            - ALLOW_USER_PASSWORD_AUTH
+      session_duration:
+        type: integer
+        default: 180
+      refresh_token_expiration:
+        type: integer
+        default: 30
+      access_token_expiration:
+        type: integer
+        default: 60
+      id_token_expiration:
+        type: integer
+        default: 60
+      advanced_auth_settings:
+        type: object
+        properties:
+          token_revocation:
+            type: boolean
+            default: false
+          prevent_user_existence_errors:
+            type: boolean
+            default: false
+      attribute_permissions:
+        type: object
+        properties:
+          read:
+            type: array
+            items:
+              type: string
+          write:
+            type: array
+            items:
+              type: string
+      pinpoint_analytics:
+        type: object
+        properties:
+          enabled:
+            type: boolean
+            default: false
+      hosted_ui:
+        type: object
+        properties:
+          status:
+            type: string
+            enum:
+              - available
+              - disabled
+            default: available
+          callback_urls:
+            type: array
+            items:
+              type: string
+          signout_urls:
+            type: array
+            items:
+              type: string
+          identity_providers:
+            type: array
+            items:
+              type: string
+          oauth_grant_types:
+            type: array
+            items:
+              type: string
+            enum:
+              - authorization_code
+              - implicit
+            default:
+              - authorization_code
+          openid_connect_scopes:
+            type: array
+            items:
+              type: string
+            enum:
+              - email
+              - openid
+              - phone
+            default:
+              - email
+              - openid
+          custom_scopes:
+            type: array
+            items:
+              type: string
+      hosted_ui_customization:
+        type: object
+        properties:
+          logo:
+            type: string
+          custom_css:
+            type: string
+  AppIntegration:
+    type: object
+    properties:
+      hosted_ui_domain:
+        type: string
+        default: "https://authhub.auth.ap-southeast-2.authNexus.com"
+      custom_domain:
+        type: string
+      scopes:
+        type: array
+        items:
+          type: string
+      grant_types:
+        type: array
+        items:
+          type: string
+          enum:
+            - authorization_code
+            - client_credentials
+        required: true
+      token_lifetime:
+        type: integer
+        default: 3600
+      resource_servers:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+            identifier:
+              type: string
+            custom_scopes:
+              type: array
+              items:
+                type: string
+      app_clients:
+        items:
+          $ref: '#/definitions/AppClient'
+  UserPoolProperties:
+    type: object
+    properties:
+      pool_name:
+        type: string
+        required: true
+      description:
+        type: string
+      domain:
+        type: string
+      region:
+        type: string
+        default: "ap-southeast-2"
+      resource_server_name:
+        type: string
+      client_name:
+        type: string
+        required: true
+      email_verification_message:
+        type: string
+      email_verification_subject:
+        type: string
+      sms_auth_message:
+        type: string
+      mfa_configuration:
+        type: string
+        enum:
+          - OFF
+          - ON
+          - OPTIONAL
+        default: OPTIONAL
+      mfa_types:
+        type: array
+        items:
+          type: string
+          enum:
+            - SMS
+            - TOTP
+        default: SMS
+      user_pool_id:
+        type: string
+      lambda_config:
+        type: object
+        properties:
+          pre_sign_up:
+            type: string
+          custom_message:
+            type: string
+          post_confirmation:
+            type: string
+          pre_authentication:
+            type: string
+          post_authentication:
+            type: string
+      password_policy:
+        type: object
+        properties:
+          min_length:
+            type: integer
+          require_uppercase:
+            type: boolean
+          require_numbers:
+            type: boolean
+          require_symbols:
+            type: boolean
+  UserPool:
+    type: object
+    properties:
+      name:
+        type: string
+      creation_date:
+        type: string
+        format: date-time
+      status:
+        type: string
+        enum: ["active", "inactive"]
+      admin_email:
+        type: string
+      domain:
+        type: string
+      default_group:
+        type: string
+      users:
+        type: array
+        items:
+          $ref: '#/definitions/User'
+      groups:
+        type: array
+        items:
+          $ref: '#/definitions/Group'
+      signin_exp:
+        type: array
+        items:
+          $ref: '#/definitions/SigninExp'
+      signup_exp:
+        type: array
+        items:
+          $ref: '#/definitions/SignupExp'
+      messages:
+        type: array
+        items:
+          $ref: '#/definitions/Message'
+      app_integration:
+        type: array
+        items:
+          $ref: '#/definitions/AppIntegration'
+      user_pool_properties:
+        type: array
+        items:
+          $ref: '#/definitions/UserPoolProperties'
+      total_users:
+        type: integer
+      active_users:
+        type: integer
+      pending_users:
+        type: integer
+      blocked_users:
+        type: integer
+      total_groups:
+        type: integer
+      mfa_enabled_users:
+        type: integer
+      daily_signups:
+        type: array
+        items:
+          type: string
+          format: date-time
+      daily_signins:
+        type: array
+        items:
+          type: string
+          format: date-time
+      created_by:
+        type: string
+      updated_by:
+        type: string
+      created_at:
+        type: string
+        format: date-time
+      updated_at:
+        type: string
+        format: date-time

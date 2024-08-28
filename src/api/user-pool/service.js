@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+const { Schema } = mongoose;
 import UserPool from "./model.js";
 
 /***********    User Pool Management     ******** */
@@ -557,7 +559,7 @@ export const addCustomAttributeService = async (
     }
 
     if (!Array.isArray(userPool.signup_exp.custom_attributes)) {
-      userPool.signup_exp.custom_attributes = []; // Initialize the custom attributes array if it doesn't exist
+      userPool.signup_exp.custom_attributes = [];
     }
 
     const attributeExists = userPool.signup_exp.custom_attributes.some(
@@ -786,5 +788,52 @@ export const deleteAppClientByIdService = async (userPoolId, clientId) => {
     return await userPool.save();
   } catch (error) {
     throw new Error(`Error deleting app client by ID: ${error.message}`);
+  }
+};
+
+export const getUserPoolDashboardDataService = async (userPoolId) => {
+  try {
+    const userPool = await UserPool.findById(userPoolId).exec();
+    const userPoolObjectId = new Schema.Types.ObjectId(userPoolId)
+
+    if (!userPool) {
+      throw new Error('User pool not found');
+    }
+
+    const userStats = await UserPool.aggregate([
+      { $match: { _id: userPoolObjectId } },
+      { $unwind: "$users" },
+      {
+        $group: {
+          _id: "$_id",
+          total_users: { $sum: 1 },
+          active_users: { $sum: { $cond: [{ $eq: ["$users.status", "active"] }, 1, 0] } },
+          pending_users: { $sum: { $cond: [{ $eq: ["$users.status", "pending"] }, 1, 0] } },
+          blocked_users: { $sum: { $cond: [{ $eq: ["$users.status", "blocked"] }, 1, 0] } },
+          mfa_enabled_users: { $sum: { $cond: ["$users.mfa_enabled", 1, 0] } },
+        },
+      },
+    ]);
+
+    const dashboardData = userStats[0] || {
+      total_users: 0,
+      active_users: 0,
+      pending_users: 0,
+      blocked_users: 0,
+      mfa_enabled_users: 0,
+    };
+
+    return {
+      total_users: dashboardData.total_users,
+      active_users: dashboardData.active_users,
+      pending_users: dashboardData.pending_users,
+      blocked_users: dashboardData.blocked_users,
+      mfa_enabled_users: dashboardData.mfa_enabled_users,
+      total_groups: userPool.groups.length,
+      daily_signups: userPool.daily_signups.length,
+      daily_signins: userPool.daily_signins.length,
+    };
+  } catch (error) {
+    throw new Error(`Error fetching dashboard data: ${error.message}`);
   }
 };

@@ -15,6 +15,7 @@ import {
   deleteUserPool,
   getAllAppClients,
   getAppClientById,
+  getDashboardData,
   getGroupByIdInPool,
   getGroupByNameInPool,
   getMessagingSettings,
@@ -48,7 +49,6 @@ router.delete("/:userPoolId/users/:userId", deleteUserInPoolById);
 
 /********** Group Management Routes **********/
 router.post("/:userPoolId/groups", createGroupInPool);
-router.put("/:userPoolId/groups/:groupId", updateGroupInPool);
 router.delete("/:userPoolId/groups/:groupId", deleteGroupInPool);
 router.get("/:userPoolId/groups/:groupId", getGroupByIdInPool);
 router.get("/:userPoolId/groups", getGroupByNameInPool);
@@ -82,5 +82,8 @@ router.get("/:userPoolId/app-clients/:clientId", getAppClientById);
 router.post("/:userPoolId/app-clients", createAppClient);
 router.put("/:userPoolId/app-clients/:clientId", updateAppClientById);
 router.delete("/:userPoolId/app-clients/:clientId", deleteAppClientById);
+
+/********** User Pool Dashboard Routes **********/
+router.get('/dashboard/:userPoolId', getDashboardData);
 
 export default router;
