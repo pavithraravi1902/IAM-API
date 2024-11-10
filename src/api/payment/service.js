@@ -72,7 +72,6 @@ const verifySignature = (
     .createHmac("sha256", razorPaySecretKey)
     .update(razorpay_order_id + "|" + razorpay_payment_id)
     .digest("hex");
-
   return generatedSignature === razorpay_signature;
 };
 

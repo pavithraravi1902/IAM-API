@@ -1,3 +1,4 @@
+import { parseCSV, parseExcel } from "../../common/parse/index.js";
 import {
   createUserPoolService,
   updateUserPoolService,
@@ -27,6 +28,9 @@ import {
   addCustomAttributeService,
   getMessagingSettingsByMessageIdService,
   getUserPoolDashboardDataService,
+  addIdentityProviderService,
+  viewSigningCertificateService,
+  usersBulkUploadInUserPoolService,
 } from "./service.js";
 
 /********** User Pool Controllers **********/
@@ -191,6 +195,34 @@ export const updateSigninExp = async (req, res) => {
   res.status(200).json(result);
 };
 
+export const addIdentityProvider = async (req, res) => {
+  const { userPoolId } = req.params;
+  const providerData = req.body;
+
+  try {
+    const identityProviders = await addIdentityProviderService(
+      userPoolId,
+      providerData
+    );
+    res.status(201).json(identityProviders);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const viewSigningCertificate = async (req, res) => {
+  const { userPoolId, providerId } = req.params;
+  try {
+    const certificate = await viewSigningCertificateService(
+      userPoolId,
+      providerId
+    );
+    res.status(200).json({ signing_certificate: certificate });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 // SignUp Experience Controllers
 export const getSignupExp = async (req, res) => {
   const { userPoolId } = req.params;
@@ -223,7 +255,6 @@ export const addCustomAttribute = async (req, res) => {
     res.status(400).json(result);
   }
 };
-
 
 // Messaging Controllers
 export const getMessagingSettings = async (req, res) => {
@@ -271,7 +302,10 @@ export const deleteMessagingSetting = async (req, res) => {
 export const getMessagingSettingsByMessageId = async (req, res) => {
   const { userPoolId, messageId } = req.params;
 
-  const result = await getMessagingSettingsByMessageIdService(userPoolId, messageId);
+  const result = await getMessagingSettingsByMessageIdService(
+    userPoolId,
+    messageId
+  );
 
   if (result.success) {
     res.status(200).json(result);
@@ -321,7 +355,11 @@ export const updateAppClientById = async (req, res) => {
     const userPoolId = req.params.userPoolId;
     const clientId = req.params.clientId;
     const updateData = req.body;
-    const updatedUserPool = await updateAppClientById(userPoolId, clientId, updateData);
+    const updatedUserPool = await updateAppClientById(
+      userPoolId,
+      clientId,
+      updateData
+    );
     res.json(updatedUserPool);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -349,3 +387,33 @@ export const getDashboardData = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const usersBulkUploadInUserPool = async (req, res) => {
+  if (!req.file) {
+    return res.status(400).send("No file uploaded.");
+  }
+  try {
+    let data;
+    const filePath = req.file.path;
+    if (req.file.mimetype === "text/csv") {
+      data = await parseCSV(filePath);
+    } else if (
+      req.file.mimetype ===
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    ) {
+      data = await parseExcel(filePath);
+    } else {
+      return res.status(400).send("Unsupported file type.");
+    }
+
+    const response = await usersBulkUploadInUserPoolService(data);
+    if (response.success) {
+      res.send("Users uploaded successfully.");
+    } else {
+      res.status(400).send(`Errors occurred:\n${response.errors.join("\n")}`);
+    }
+  } catch (error) {
+    res.status(500).send(`Error processing file: ${error.message}`);
+  }
+};
+

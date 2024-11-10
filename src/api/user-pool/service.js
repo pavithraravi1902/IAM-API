@@ -506,6 +506,42 @@ export const updateSigninExpService = async (userPoolId, signinExpData) => {
   }
 };
 
+export const addIdentityProviderService = async (userPoolId, providerData) => {
+  try {
+    const userPool = await UserPool.findById(userPoolId).exec();
+    if (!userPool) {
+      throw new Error("User pool not found");
+    }
+
+    const signinExp = userPool.signin_exp;
+    signinExp.federated_identity_providers.push(providerData);
+
+    await userPool.save();
+    return signinExp.federated_identity_providers;
+  } catch (error) {
+    throw new Error(`Error adding identity provider: ${error.message}`);
+  }
+};
+
+export const viewSigningCertificateService = async (userPoolId, providerId) => {
+  try {
+    const userPool = await UserPool.findById(userPoolId).exec();
+    if (!userPool) {
+      throw new Error("User pool not found");
+    }
+
+    const provider =
+      userPool.signin_exp.federated_identity_providers.id(providerId);
+    if (!provider) {
+      throw new Error("Identity provider not found");
+    }
+
+    return provider.signing_certificate;
+  } catch (error) {
+    throw new Error(`Error viewing signing certificate: ${error.message}`);
+  }
+};
+
 /***********    SignUp Exp     ******** */
 
 export const getSignupExpService = async (userPoolId) => {
@@ -694,12 +730,10 @@ export const getMessagingSettingsByMessageIdService = async (
     if (!userPool) {
       return { success: false, message: "User pool not found" };
     }
-
     const messageSetting = userPool.messages.id(messageId);
     if (!messageSetting) {
       return { success: false, message: "Message setting not found" };
     }
-
     return {
       success: true,
       message: "Message setting retrieved successfully",
@@ -719,9 +753,11 @@ export const getMessagingSettingsByMessageIdService = async (
 
 export const getAllAppClientService = async (userPoolId) => {
   try {
-    const userPool = await UserPool.findById(userPoolId).select('app_integration');
+    const userPool = await UserPool.findById(userPoolId).select(
+      "app_integration"
+    );
     if (!userPool || userPool.app_integration.length === 0) {
-      throw new Error('App integration not found');
+      throw new Error("App integration not found");
     }
     return userPool.app_integration[0].app_clients;
   } catch (error) {
@@ -731,13 +767,17 @@ export const getAllAppClientService = async (userPoolId) => {
 
 export const getAppClientByIdService = async (userPoolId, clientId) => {
   try {
-    const userPool = await UserPool.findById(userPoolId).select('app_integration');
+    const userPool = await UserPool.findById(userPoolId).select(
+      "app_integration"
+    );
     if (!userPool || userPool.app_integration.length === 0) {
-      throw new Error('App integration not found');
+      throw new Error("App integration not found");
     }
-    const appClient = userPool.app_integration[0].app_clients.find(client => client.client_id === clientId);
+    const appClient = userPool.app_integration[0].app_clients.find(
+      (client) => client.client_id === clientId
+    );
     if (!appClient) {
-      throw new Error('App Client not found');
+      throw new Error("App Client not found");
     }
     return appClient;
   } catch (error) {
@@ -749,9 +789,9 @@ export const createAppClientService = async (userPoolId, appClientData) => {
   try {
     const userPool = await UserPool.findById(userPoolId);
     if (!userPool) {
-      throw new Error('User Pool not found');
+      throw new Error("User Pool not found");
     }
-    
+
     userPool.app_integration[0].app_clients.push(appClientData);
     return await userPool.save();
   } catch (error) {
@@ -759,18 +799,22 @@ export const createAppClientService = async (userPoolId, appClientData) => {
   }
 };
 
-export const updateAppClientByIdService = async (userPoolId, clientId, updateData) => {
+export const updateAppClientByIdService = async (
+  userPoolId,
+  clientId,
+  updateData
+) => {
   try {
     const userPool = await UserPool.findById(userPoolId);
     if (!userPool) {
-      throw new Error('User Pool not found');
+      throw new Error("User Pool not found");
     }
-
-    const appClient = userPool.app_integration[0].app_clients.find(client => client.client_id === clientId);
+    const appClient = userPool.app_integration[0].app_clients.find(
+      (client) => client.client_id === clientId
+    );
     if (!appClient) {
-      throw new Error('App Client not found');
+      throw new Error("App Client not found");
     }
-
     Object.assign(appClient, updateData);
     return await userPool.save();
   } catch (error) {
@@ -782,9 +826,12 @@ export const deleteAppClientByIdService = async (userPoolId, clientId) => {
   try {
     const userPool = await UserPool.findById(userPoolId);
     if (!userPool) {
-      throw new Error('User Pool not found');
+      throw new Error("User Pool not found");
     }
-    userPool.app_integration[0].app_clients = userPool.app_integration[0].app_clients.filter(client => client.client_id !== clientId);
+    userPool.app_integration[0].app_clients =
+      userPool.app_integration[0].app_clients.filter(
+        (client) => client.client_id !== clientId
+      );
     return await userPool.save();
   } catch (error) {
     throw new Error(`Error deleting app client by ID: ${error.message}`);
@@ -793,28 +840,37 @@ export const deleteAppClientByIdService = async (userPoolId, clientId) => {
 
 export const getUserPoolDashboardDataService = async (userPoolId) => {
   try {
-    const userPool = await UserPool.findById(userPoolId).exec();
-    const userPoolObjectId = new Schema.Types.ObjectId(userPoolId)
-
+    const userPoolObjectId = new mongoose.Types.ObjectId(userPoolId);
+    const userPool = await UserPool.findById(userPoolObjectId).exec();
     if (!userPool) {
-      throw new Error('User pool not found');
+      throw new Error("User pool not found");
     }
-
     const userStats = await UserPool.aggregate([
       { $match: { _id: userPoolObjectId } },
       { $unwind: "$users" },
       {
+        $addFields: {
+          user_status: "$users.status",
+          mfa_status: "$users.mfa_enabled",
+        },
+      },
+      {
         $group: {
           _id: "$_id",
           total_users: { $sum: 1 },
-          active_users: { $sum: { $cond: [{ $eq: ["$users.status", "active"] }, 1, 0] } },
-          pending_users: { $sum: { $cond: [{ $eq: ["$users.status", "pending"] }, 1, 0] } },
-          blocked_users: { $sum: { $cond: [{ $eq: ["$users.status", "blocked"] }, 1, 0] } },
-          mfa_enabled_users: { $sum: { $cond: ["$users.mfa_enabled", 1, 0] } },
+          active_users: {
+            $sum: { $cond: [{ $eq: ["$user_status", "active"] }, 1, 0] },
+          },
+          pending_users: {
+            $sum: { $cond: [{ $eq: ["$user_status", "pending"] }, 1, 0] },
+          },
+          blocked_users: {
+            $sum: { $cond: [{ $eq: ["$user_status", "blocked"] }, 1, 0] },
+          },
+          mfa_enabled_users: { $sum: { $cond: ["$mfa_status", 1, 0] } },
         },
       },
     ]);
-
     const dashboardData = userStats[0] || {
       total_users: 0,
       active_users: 0,
@@ -822,7 +878,6 @@ export const getUserPoolDashboardDataService = async (userPoolId) => {
       blocked_users: 0,
       mfa_enabled_users: 0,
     };
-
     return {
       total_users: dashboardData.total_users,
       active_users: dashboardData.active_users,
@@ -835,5 +890,61 @@ export const getUserPoolDashboardDataService = async (userPoolId) => {
     };
   } catch (error) {
     throw new Error(`Error fetching dashboard data: ${error.message}`);
+  }
+};
+
+export const usersBulkUploadInUserPoolService = async (data) => {
+  const errorMessages = [];
+  try {
+    const userPoolId = '66bb59b8f722654c90707631'; 
+    const userPool = await UserPool.findById(userPoolId);
+    if (!userPool) {
+      throw new Error('User pool not found');
+    }
+    for (const user of data) {
+      try {
+        if (
+          !user.username || 
+          typeof user.username !== 'string' ||
+          !user.email || 
+          typeof user.email !== 'string' ||
+          !user.password || 
+          typeof user.password !== 'string'
+        ) {
+          throw new Error(`Missing or invalid required field in user: ${JSON.stringify(user)}`);
+        }
+        const existingUser = userPool.users.find(u => u.email === user.email);
+        if (existingUser) {
+          errorMessages.push(`User with email ${user.email} already exists.`);
+          continue;
+        }
+        const newUser = {
+          username: user.username,
+          email: user.email,
+          phone_number: user.phone_number || null,
+          password: user.password,
+          custom_attributes: user.custom_attributes ? JSON.parse(user.custom_attributes) : {},
+          status: user.status || 'pending', 
+          email_verified: user.email_verified || false,
+          phone_verified: user.phone_verified || false,
+          mfa_enabled: user.mfa_enabled || false,
+          roles: user.roles ? user.roles.split(',').map(role => role.trim()) : [],
+          last_login: user.last_login ? new Date(user.last_login) : null,
+          provider: user.provider || null,
+          provider_id: user.provider_id || null,
+          federated_attributes: user.federated_attributes ? JSON.parse(user.federated_attributes) : {},
+        };
+        userPool.users.push(newUser);
+      } catch (userError) {
+        errorMessages.push(`Error processing user ${user.email}: ${userError.message}`);
+      }
+    }
+    await userPool.save();
+    if (errorMessages.length > 0) {
+      return { success: false, errors: errorMessages };
+    }
+    return { success: true };
+  } catch (error) {
+    throw new Error(`Error uploading users: ${error.message}`);
   }
 };

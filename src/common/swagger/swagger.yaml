@@ -6,14 +6,16 @@ info:
 host: "localhost:3000"
 basePath: "/"
 tags:
+  - name: "User Pool"
+    description: "Users Pool APIs"
   - name: "Users"
     description: "Users and Auths APIs"
+  - name: "Payment"
+    description: "RazorPay integration"
   - name: "Documents"
     description: "AWS SDK File Upload"
   - name: "Profile"
     description: "Update User Profile"
-  - name: "Payment"
-    description: "RazorPay integration"
   - name: "Role Management"
     description: "Manage Role"
   - name: "Admin Configs"
@@ -22,6 +24,862 @@ schemes:
   - "http"
   - "https"
 paths:
+  /user-pool:
+    post:
+      tags:
+        - User Pool 
+      summary: Create User Pool
+      description: "User pool crud"
+      operationId: "createUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Create User Pool"
+          required: true
+          schema:
+            $ref: "#/definitions/UserPool"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /user-pool/{userPoolId}:
+    put:
+      tags:
+        - User Pool 
+      summary: User pool Update
+      description: "User pool Update"
+      operationId: "updateUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Update User Pool"
+          required: true
+          schema:
+            $ref: "#/definitions/UserPool" 
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    delete:
+      tags:
+        - User Pool 
+      summary: delete user pool
+      description: "User pool crud"
+      operationId: "delete user pool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /user-pool/{userPoolId}/users:
+    get:
+      tags:
+        - User Pool 
+      summary: List User pool Data
+      description: "List User pool Data"
+      operationId: "listUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    post:
+      tags:
+        - User Pool 
+      summary: Create User in user Pool
+      description: "Create User in user Pool"
+      operationId: "createUserInUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "User Pool"
+          required: true
+          schema:
+            $ref: "#/definitions/User" 
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /user-pool/{userPoolId}/users/{userId}:
+    get:
+      tags:
+        - User Pool 
+      summary: Get User in userpool
+      description: "Get User in User pool"
+      operationId: "getUserInUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - name: "userId"
+          in: "path"
+          description: "userId"
+          required: true
+          type: "string" 
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    post:
+      tags:
+        - User Pool 
+      summary: Update User in user Pool
+      description: "Update User in user Pool"
+      operationId: "updateUserInUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - name: "userId"
+          in: "path"
+          description: "userId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "User Pool"
+          required: true
+          schema:
+            $ref: "#/definitions/User" 
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    delete:
+      tags:
+        - User Pool 
+      summary: delete user in user pool
+      description: "User pool crud"
+      operationId: "delete user in user pool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - name: "userId"
+          in: "path"
+          description: "userId"
+          required: true
+          type: "string"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /user-pool/{userPoolId}/groups:
+    get:
+      tags:
+        - User Pool 
+      summary: List group in user pool
+      description: "List group in user pool"
+      operationId: "listGroup"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    post:
+      tags:
+        - User Pool 
+      summary: Create group in user Pool
+      description: "Create group in user Pool"
+      operationId: "createGroupInUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "User Pool"
+          required: true
+          schema:
+            $ref: "#/definitions/Group" 
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /user-pool/{userPoolId}/groups/{groupId}:
+    get:
+      tags:
+        - User Pool 
+      summary: Get Group in userpool
+      description: "Get User in User pool"
+      operationId: "getUserInUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - name: "groupId"
+          in: "path"
+          description: "groupId"
+          required: true
+          type: "string" 
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    post:
+      tags:
+        - User Pool 
+      summary: Update Group in user Pool
+      description: "Update Group in user Pool"
+      operationId: "updateGroupInUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - name: "groupId"
+          in: "path"
+          description: "groupId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Group"
+          required: true
+          schema:
+            $ref: "#/definitions/Group" 
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    put:
+      tags:
+        - User Pool 
+      summary: Update Group in user Pool
+      description: "Update Group in user Pool"
+      operationId: "updateGroupInUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - name: "groupId"
+          in: "path"
+          description: "groupId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Group"
+          required: true
+          schema:
+            $ref: "#/definitions/Group" 
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    delete:
+      tags:
+        - User Pool 
+      summary: delete group in user pool
+      description: "User pool crud"
+      operationId: "delete group in user pool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - name: "groupId"
+          in: "path"
+          description: "groupId"
+          required: true
+          type: "string"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /user-pool/{userPoolId}/groups/{groupId}/users/{userId}:
+    delete:
+      tags:
+        - User Pool 
+      summary: delete group in user pool
+      description: "User pool crud"
+      operationId: "delete group in user pool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - name: "groupId"
+          in: "path"
+          description: "groupId"
+          required: true
+          type: "string"
+        - name: "userId"
+          in: "path"
+          description: "groupId"
+          required: true
+          type: "string"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /user-pool/{userPoolId}/signin-exp:
+    get:
+      tags:
+        - User Pool 
+      summary: Get Sigin Experience in userpool
+      description: "Get Sigin Experience in User pool"
+      operationId: "getSignInExpInUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string" 
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    put:
+      tags:
+        - User Pool 
+      summary: Update SignIn Experience in user Pool
+      description: "Update SignIn Experience in user Pool"
+      operationId: "updateSignInExpInUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "SignInExp"
+          required: true
+          schema:
+            $ref: "#/definitions/SignInExp" 
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /user-pool/{userPoolId}/signup-exp:
+    get:
+      tags:
+        - User Pool 
+      summary: Get Sigup Experience in userpool
+      description: "Get Signup Experience in User pool"
+      operationId: "getSignUpExpInUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string" 
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    put:
+      tags:
+        - User Pool 
+      summary: Update SignUp Experience in user Pool
+      description: "Update SignUp Experience in user Pool"
+      operationId: "updateSignUpExpInUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "SignUpExp"
+          required: true
+          schema:
+            $ref: "#/definitions/SignUpExp" 
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /user-pool/{userPoolId}/custom-attributes:
+    post:
+      tags:
+        - User Pool 
+      summary: create custom attributes
+      description: "Create custom attributes"
+      operationId: "createCustomAttributes"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "CustomAttributes"
+          required: true
+          schema:
+            $ref: "#/definitions/CustomAttributesResponse" 
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /user-pool/{userPoolId}/messages:
+    get:
+      tags:
+        - User Pool 
+      summary: Get Messaging info in user pool
+      description: "Get Messaging info in user pool"
+      operationId: "getMessagingInfo"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    post:
+      tags:
+        - User Pool 
+      summary: Create Messaging in user Pool
+      description: "Create messaging in user Pool"
+      operationId: "createMessagingInUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "User Pool"
+          required: true
+          schema:
+            $ref: "#/definitions/Message" 
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /user-pool/{userPoolId}/messages/{messageId}:
+    get:
+      tags:
+        - User Pool 
+      summary: Get Message using messageId in userpool
+      description: "Get message using messageId in User pool"
+      operationId: "getMessageByMessageId"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - name: "messageId"
+          in: "path"
+          description: "messageId"
+          required: true
+          type: "string" 
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    put:
+      tags:
+        - User Pool 
+      summary: Update message in user Pool
+      description: "Update message in user Pool"
+      operationId: "updateMessageInUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - name: "messageId"
+          in: "path"
+          description: "messageId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Message"
+          required: true
+          schema:
+            $ref: "#/definitions/Message" 
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    delete:
+      tags:
+        - User Pool 
+      summary: delete message in user pool
+      description: "User pool crud"
+      operationId: "delete message in user pool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - name: "messageId"
+          in: "path"
+          description: "messageId"
+          required: true
+          type: "string"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /user-pool/{userPoolId}/app-clients:
+    get:
+      tags:
+        - User Pool 
+      summary: List app client in userpool
+      description: "List app client in userpool"
+      operationId: "listAppClientInUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string" 
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    post:
+      tags:
+        - User Pool 
+      summary: Update App client in user Pool
+      description: "Update App client in user Pool"
+      operationId: "updateAppClientInUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "AppClientSchema"
+          required: true
+          schema:
+            $ref: "#/definitions/AppClientSchema" 
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /user-pool/{userPoolId}/app-clients/{clientId}:
+    get:
+      tags:
+        - User Pool 
+      summary: Get app-clients using clientId in userpool
+      description: "Get app-clients using clientId in User pool"
+      operationId: "getAppClientByClientId"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - name: "clientId"
+          in: "path"
+          description: "clientId"
+          required: true
+          type: "string" 
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    put:
+      tags:
+        - User Pool 
+      summary: Update App Client in user Pool
+      description: "Update app client in user Pool"
+      operationId: "updateAppClientInUserPool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - name: "clientId"
+          in: "path"
+          description: "clientId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "clientIdId"
+          required: true
+          schema:
+            $ref: "#/definitions/AppClientSchema" 
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    delete:
+      tags:
+        - User Pool 
+      summary: delete app client in user pool
+      description: "User pool crud"
+      operationId: "delete app client in user pool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userPoolId"
+          in: "path"
+          description: "userPoolId"
+          required: true
+          type: "string"
+        - name: "clientId"
+          in: "path"
+          description: "clientId"
+          required: true
+          type: "string"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /user-pool/dashboard/{userPoolId}:
+    get:
+      summary: "Get dashboard data for a user pool"
+      description: "Fetches aggregated dashboard data for the specified user pool, including statistics like total users, active users, pending users, blocked users, MFA-enabled users, total groups, daily signups, and daily sign-ins."
+      tags:
+        - "User Pool"
+      parameters:
+        - name: userPoolId
+          in: path
+          required: true
+          schema:
+            type: string
+            description: "The ID of the user pool for which to fetch dashboard data."
+          example: "64e7b0f1c9f7e8a7b5b5b5b5"
+      responses:
+        '200':
+          description: "Dashboard data successfully retrieved."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_users:
+                    type: integer
+                    description: "The total number of users in the user pool."
+                    example: 150
+                  active_users:
+                    type: integer
+                    description: "The number of active users in the user pool."
+                    example: 120
+                  pending_users:
+                    type: integer
+                    description: "The number of users with a pending status in the user pool."
+                    example: 20
+                  blocked_users:
+                    type: integer
+                    description: "The number of users with a blocked status in the user pool."
+                    example: 10
+                  mfa_enabled_users:
+                    type: integer
+                    description: "The number of users with multi-factor authentication enabled."
+                    example: 80
+                  total_groups:
+                    type: integer
+                    description: "The total number of groups in the user pool."
+                    example: 5
+                  daily_signups:
+                    type: integer
+                    description: "The number of sign-ups recorded today."
+                    example: 10
+                  daily_signins:
+                    type: integer
+                    description: "The number of sign-ins recorded today."
+                    example: 30
+        '404':
+          description: "User pool not found."
+        '500':
+          description: "Error fetching dashboard data."
   /users:
     post:
       tags:
@@ -911,410 +1769,6 @@ paths:
           description: "Invalid input"
         "200":
           description: "successfull Operation"
-  /user-pool:
-    post:
-      tags:
-        - User Pool 
-      summary: Create User Pool
-      description: "User pool crud"
-      operationId: "createUserPool"
-      consumes:
-        - "application/json"
-      produces:
-        - "application/json"
-      parameters:
-        - in: "body"
-          name: "body"
-          description: "Create User Pool"
-          required: true
-          schema:
-            $ref: "#/definitions/UserPool"
-      responses:
-        "400":
-          description: "Invalid input"
-        "200":
-          description: "successfull Operation"
-  /user-pool/{userPoolId}:
-    put:
-      tags:
-        - User Pool 
-      summary: User pool Update
-      description: "User pool Update"
-      operationId: "updateUserPool"
-      consumes:
-        - "application/json"
-      produces:
-        - "application/json"
-      parameters:
-        - name: "userPoolId"
-          in: "path"
-          description: "userPoolId"
-          required: true
-          type: "string"
-        - in: "body"
-          name: "body"
-          description: "Update User Pool"
-          required: true
-          schema:
-            $ref: "#/definitions/UserPool" 
-      responses:
-        "400":
-          description: "Invalid input"
-        "200":
-          description: "successfull Operation"
-    delete:
-      tags:
-        - User Pool 
-      summary: delete user pool
-      description: "User pool crud"
-      operationId: "delete user pool"
-      consumes:
-        - "application/json"
-      produces:
-        - "application/json"
-      parameters:
-        - name: "userPoolId"
-          in: "path"
-          description: "userPoolId"
-          required: true
-          type: "string"
-      responses:
-        "400":
-          description: "Invalid input"
-        "200":
-          description: "successfull Operation"
-  /user-pool/{userPoolId}/users:
-    get:
-      tags:
-        - User Pool 
-      summary: List User pool Data
-      description: "List User pool Data"
-      operationId: "listUserPool"
-      consumes:
-        - "application/json"
-      produces:
-        - "application/json"
-      parameters:
-        - name: "userPoolId"
-          in: "path"
-          description: "userPoolId"
-          required: true
-          type: "string"
-      responses:
-        "400":
-          description: "Invalid input"
-        "200":
-          description: "successfull Operation"
-    post:
-      tags:
-        - User Pool 
-      summary: Create User in user Pool
-      description: "Create User in user Pool"
-      operationId: "createUserInUserPool"
-      consumes:
-        - "application/json"
-      produces:
-        - "application/json"
-      parameters:
-        - name: "userPoolId"
-          in: "path"
-          description: "userPoolId"
-          required: true
-          type: "string"
-        - in: "body"
-          name: "body"
-          description: "User Pool"
-          required: true
-          schema:
-            $ref: "#/definitions/User" 
-      responses:
-        "400":
-          description: "Invalid input"
-        "200":
-          description: "successfull Operation"
-  /user-pool/{userPoolId}/users/{userId}:
-    get:
-      tags:
-        - User Pool 
-      summary: Get User in userpool
-      description: "Get User in User pool"
-      operationId: "getUserInUserPool"
-      consumes:
-        - "application/json"
-      produces:
-        - "application/json"
-      parameters:
-        - name: "userPoolId"
-          in: "path"
-          description: "userPoolId"
-          required: true
-          type: "string"
-        - name: "userId"
-          in: "path"
-          description: "userId"
-          required: true
-          type: "string" 
-      responses:
-        "400":
-          description: "Invalid input"
-        "200":
-          description: "successfull Operation"
-    post:
-      tags:
-        - User Pool 
-      summary: Update User in user Pool
-      description: "Update User in user Pool"
-      operationId: "updateUserInUserPool"
-      consumes:
-        - "application/json"
-      produces:
-        - "application/json"
-      parameters:
-        - name: "userPoolId"
-          in: "path"
-          description: "userPoolId"
-          required: true
-          type: "string"
-        - name: "userId"
-          in: "path"
-          description: "userId"
-          required: true
-          type: "string"
-        - in: "body"
-          name: "body"
-          description: "User Pool"
-          required: true
-          schema:
-            $ref: "#/definitions/User" 
-      responses:
-        "400":
-          description: "Invalid input"
-        "200":
-          description: "successfull Operation"
-    delete:
-      tags:
-        - User Pool 
-      summary: delete user in user pool
-      description: "User pool crud"
-      operationId: "delete user in user pool"
-      consumes:
-        - "application/json"
-      produces:
-        - "application/json"
-      parameters:
-        - name: "userPoolId"
-          in: "path"
-          description: "userPoolId"
-          required: true
-          type: "string"
-        - name: "userId"
-          in: "path"
-          description: "userId"
-          required: true
-          type: "string"
-      responses:
-        "400":
-          description: "Invalid input"
-        "200":
-          description: "successfull Operation"
-  /user-pool/{userPoolId}/groups:
-    get:
-      tags:
-        - User Pool 
-      summary: List group in user pool
-      description: "List group in user pool"
-      operationId: "listGroup"
-      consumes:
-        - "application/json"
-      produces:
-        - "application/json"
-      parameters:
-        - name: "userPoolId"
-          in: "path"
-          description: "userPoolId"
-          required: true
-          type: "string"
-      responses:
-        "400":
-          description: "Invalid input"
-        "200":
-          description: "successfull Operation"
-    post:
-      tags:
-        - User Pool 
-      summary: Create group in user Pool
-      description: "Create group in user Pool"
-      operationId: "createGroupInUserPool"
-      consumes:
-        - "application/json"
-      produces:
-        - "application/json"
-      parameters:
-        - name: "userPoolId"
-          in: "path"
-          description: "userPoolId"
-          required: true
-          type: "string"
-        - in: "body"
-          name: "body"
-          description: "User Pool"
-          required: true
-          schema:
-            $ref: "#/definitions/Group" 
-      responses:
-        "400":
-          description: "Invalid input"
-        "200":
-          description: "successfull Operation"
-  /user-pool/{userPoolId}/groups/{groupId}:
-    get:
-      tags:
-        - User Pool 
-      summary: Get Group in userpool
-      description: "Get User in User pool"
-      operationId: "getUserInUserPool"
-      consumes:
-        - "application/json"
-      produces:
-        - "application/json"
-      parameters:
-        - name: "userPoolId"
-          in: "path"
-          description: "userPoolId"
-          required: true
-          type: "string"
-        - name: "groupId"
-          in: "path"
-          description: "groupId"
-          required: true
-          type: "string" 
-      responses:
-        "400":
-          description: "Invalid input"
-        "200":
-          description: "successfull Operation"
-    post:
-      tags:
-        - User Pool 
-      summary: Update Group in user Pool
-      description: "Update Group in user Pool"
-      operationId: "updateGroupInUserPool"
-      consumes:
-        - "application/json"
-      produces:
-        - "application/json"
-      parameters:
-        - name: "userPoolId"
-          in: "path"
-          description: "userPoolId"
-          required: true
-          type: "string"
-        - name: "groupId"
-          in: "path"
-          description: "groupId"
-          required: true
-          type: "string"
-        - in: "body"
-          name: "body"
-          description: "Group"
-          required: true
-          schema:
-            $ref: "#/definitions/Group" 
-      responses:
-        "400":
-          description: "Invalid input"
-        "200":
-          description: "successfull Operation"
-    put:
-      tags:
-        - User Pool 
-      summary: Update Group in user Pool
-      description: "Update Group in user Pool"
-      operationId: "updateGroupInUserPool"
-      consumes:
-        - "application/json"
-      produces:
-        - "application/json"
-      parameters:
-        - name: "userPoolId"
-          in: "path"
-          description: "userPoolId"
-          required: true
-          type: "string"
-        - name: "groupId"
-          in: "path"
-          description: "groupId"
-          required: true
-          type: "string"
-        - in: "body"
-          name: "body"
-          description: "Group"
-          required: true
-          schema:
-            $ref: "#/definitions/Group" 
-      responses:
-        "400":
-          description: "Invalid input"
-        "200":
-          description: "successfull Operation"
-    delete:
-      tags:
-        - User Pool 
-      summary: delete group in user pool
-      description: "User pool crud"
-      operationId: "delete group in user pool"
-      consumes:
-        - "application/json"
-      produces:
-        - "application/json"
-      parameters:
-        - name: "userPoolId"
-          in: "path"
-          description: "userPoolId"
-          required: true
-          type: "string"
-        - name: "groupId"
-          in: "path"
-          description: "groupId"
-          required: true
-          type: "string"
-      responses:
-        "400":
-          description: "Invalid input"
-        "200":
-          description: "successfull Operation"
-  /user-pool/{userPoolId}/groups/{groupId}/users/{userId}:
-    delete:
-      tags:
-        - User Pool 
-      summary: delete group in user pool
-      description: "User pool crud"
-      operationId: "delete group in user pool"
-      consumes:
-        - "application/json"
-      produces:
-        - "application/json"
-      parameters:
-        - name: "userPoolId"
-          in: "path"
-          description: "userPoolId"
-          required: true
-          type: "string"
-        - name: "groupId"
-          in: "path"
-          description: "groupId"
-          required: true
-          type: "string"
-        - name: "userId"
-          in: "path"
-          description: "groupId"
-          required: true
-          type: "string"
-      responses:
-        "400":
-          description: "Invalid input"
-        "200":
-          description: "successfull Operation"
 securityDefinitions:
   api_key:
     type: "apiKey"
@@ -1601,7 +2055,7 @@ definitions:
         type: string
         format: date-time
         default: "now"
-  SigninExpSchema:
+  SigninExp:
     type: object
     properties:
       allowed_flows:
@@ -1653,7 +2107,7 @@ definitions:
           - email
           - sms
         default: email
-  SigninExpSchema:
+  SigninExp:
     type: object
     properties:
       allowed_flows:
@@ -1705,7 +2159,7 @@ definitions:
           - email
           - sms
         default: email
-  SignupExpSchema:
+  SignupExp:
     type: object
     properties:
       required_attributes:
@@ -2134,3 +2588,79 @@ definitions:
       updated_at:
         type: string
         format: date-time
+  CustomAttribute:
+    type: object
+    properties:
+      name:
+        type: string
+        description: "The name of the custom attribute. It must be 20 characters or fewer."
+        maxLength: 20
+        example: "customAttribute1"
+      type:
+        type: string
+        description: "The data type of the custom attribute."
+        enum: 
+          - String
+          - Number
+        example: "String"
+      min_length:
+        type: integer
+        description: "Optional minimum length for the attribute if it's a string."
+        minimum: 0
+        example: 1
+      max_length:
+        type: integer
+        description: "Optional maximum length for the attribute if it's a string."
+        maximum: 2048
+        example: 255
+      mutable:
+        type: boolean
+        description: "Indicates whether the custom attribute can be modified after creation."
+        default: false
+        example: true
+    required:
+      - name
+      - type
+    description: |
+      Custom attributes can be used to personalize the sign-up experience by adding up to 50 attributes per user pool.
+      The name must be 20 characters or fewer, and attribute names cannot be changed after creation.
+  CustomAttributesResponse:
+    type: array
+    items:
+      $ref: '#/definition/CustomAttribute'
+      description: "Array of custom attributes configured for a user pool."
+  DashboardData:
+    type: object
+    properties:
+      total_users:
+        type: integer
+        description: "The total number of users in the user pool."
+        example: 150
+      active_users:
+        type: integer
+        description: "The number of active users in the user pool."
+        example: 120
+      pending_users:
+        type: integer
+        description: "The number of users with a pending status in the user pool."
+        example: 20
+      blocked_users:
+        type: integer
+        description: "The number of users with a blocked status in the user pool."
+        example: 10
+      mfa_enabled_users:
+        type: integer
+        description: "The number of users with multi-factor authentication enabled."
+        example: 80
+      total_groups:
+        type: integer
+        description: "The total number of groups in the user pool."
+        example: 5
+      daily_signups:
+        type: integer
+        description: "The number of sign-ups recorded today."
+        example: 10
+      daily_signins:
+        type: integer
+        description: "The number of sign-ins recorded today."
+        example: 30

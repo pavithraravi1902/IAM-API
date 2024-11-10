@@ -1,0 +1,2 @@
+username,email,phone_number,password,custom_attributes,status,email_verified,phone_verified,mfa_enabled,roles,last_login,provider,provider_id,federated_attributes
+pavishree,pavishree@example.com,1234567890,SecurePassword123,"{""age"": ""30""}",active,False,False,False,"admin, user",2024-08-29T12:00:00Z,google,12345,"{""oauth"": ""token123""}"

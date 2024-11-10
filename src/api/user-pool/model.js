@@ -160,10 +160,10 @@ const AppClientSchema = new Schema({
 
 
 const AppIntegrationSchema = new Schema({
-  hosted_ui_domain: {
-    type: String,
-    default: "https://authhub.auth.ap-southeast-2.authNexus.com",
-  },
+  // hosted_ui_domain: {
+  //   type: String,
+  //   default: "https://authhub.auth.ap-southeast-2.authNexus.com",
+  // },
   custom_domain: { type: String },
   scopes: { type: [String] },
   grant_types: {

@@ -43,10 +43,8 @@ async function createEditablePdfFromImage() {
      height: field.height,
    });
    textField.setFontSize(12);
-   //textField.setBackgroundColor(rgb(1, 1, 1)); // Optional: white background for visibility
  });
 
- // Save the PDF
  const pdfBytes = await pdfDoc.save();
  fs.writeFileSync('invoice1.pdf', pdfBytes);
 }

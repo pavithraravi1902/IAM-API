@@ -1,6 +1,7 @@
 import express from "express";
 import {
   addCustomAttribute,
+  addIdentityProvider,
   addMessagingSetting,
   addUserToGroup,
   createAppClient,
@@ -32,10 +33,25 @@ import {
   updateSigninExp,
   updateSignupExp,
   updateUserInPoolById,
-  updateUserPool
+  updateUserPool,
+  usersBulkUploadInUserPool,
+  viewSigningCertificate
 } from "./controller.js";
+import multer from "multer";
+import path from 'path'
 
 const router = express.Router();
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+      cb(null, Date.now() + path.extname(file.originalname));
+    },
+  }),
+});
 
 /********** User Pool Routes **********/
 router.post("/", createUserPool);
@@ -63,6 +79,8 @@ router.delete("/:userPoolId/groups/:groupId", deleteGroupById);
 /********** SignIn Experience Routes **********/
 router.get("/:userPoolId/signin-exp", getSigninExp);
 router.put("/:userPoolId/signin-exp", updateSigninExp);
+router.post('/:userPoolId/identity-provider', addIdentityProvider);
+router.get('/:userPoolId/identity-provider/:providerId/certificate', viewSigningCertificate);
 
 /********** SignUp Experience Routes **********/
 router.get("/:userPoolId/signup-exp", getSignupExp);
@@ -85,5 +103,8 @@ router.delete("/:userPoolId/app-clients/:clientId", deleteAppClientById);
 
 /********** User Pool Dashboard Routes **********/
 router.get('/dashboard/:userPoolId', getDashboardData);
+
+/********** User Pool Bulk Upload **********/
+router.post('/upload', upload.single('file'), usersBulkUploadInUserPool);
 
 export default router;
